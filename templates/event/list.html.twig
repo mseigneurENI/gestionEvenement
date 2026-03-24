@@ -16,17 +16,17 @@
         <tbody>
         {% for event in events %}
             <tr>
-                <td>{{ event.beginDate|date('d/m/Y H:i') }}</td>
-                <td>{{ event.endDate }}</td>
-                <td>{{ event.register }} / {{ event.maxRegister }}</td>
-                <td>{{ event.status }}</td>
+                <td>{{ event.beginDateEvent|date('d/m/Y H:i') }}</td>
+                <td>{{ event.endDate|date('d/m/Y H:i') }}</td>
+                <td>{{ event.participants|length }} / {{ event.RegistrationMaxNb }}</td>
+{#                <td>{{ event.status }}</td>#}
                 <td>{{ event.organiser.firstname }} {{ event.organiser.lastname }}</td>
-                <td>
-                    <a href="{{ path('events_show') }}">Afficher</a>
-                    <a href="{{ path('events_update') }}">Modifier</a>
-                    <a href="{{ path('events_outing') }}">Se désister</a>
+{#                <td>#}
+{#                    <a href="{{ path('show', {'id': event.id}) }}">Afficher</a>#}
+{#                    <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>#}
+{#                    <a href="{{ path('events_outing', {'id': event.id}) }}">Se désister</a>#}
 
-                </td>
+{#                </td>#}
             </tr>
 {#        {% else %}#}
 {#            <tr>#}
