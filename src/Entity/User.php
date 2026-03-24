@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -48,6 +50,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Campus $campus = null;
+
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'participants')]
+    private Collection $events;
+
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'organiser')]
+    private Collection $organisedEvents;
+
+    public function __construct()
+    {
+        $this->events = new ArrayCollection();
+        $this->organisedEvents = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -198,6 +222,75 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setImage(?string $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): static
+    {
+        $this->campus = $campus;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+
+    public function addEvent(Event $event): static
+    {
+        if (!$this->events->contains($event)) {
+            $this->events->add($event);
+            $event->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Event $event): static
+    {
+        if ($this->events->removeElement($event)) {
+            $event->removeParticipant($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getOrganisedEvents(): Collection
+    {
+        return $this->organisedEvents;
+    }
+
+    public function addOrganisedEvent(Event $organisedEvent): static
+    {
+        if (!$this->organisedEvents->contains($organisedEvent)) {
+            $this->organisedEvents->add($organisedEvent);
+            $organisedEvent->setOrganiser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrganisedEvent(Event $organisedEvent): static
+    {
+        if ($this->organisedEvents->removeElement($organisedEvent)) {
+            // set the owning side to null (unless already changed)
+            if ($organisedEvent->getOrganiser() === $this) {
+                $organisedEvent->setOrganiser(null);
+            }
+        }
 
         return $this;
     }
