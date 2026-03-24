@@ -18,7 +18,7 @@ class SecurityController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->getUser()) {
-            return $this->redirectToRoute('app_home');
+            return $this->redirectToRoute('main_home');
         }
 
         // get the login error if there is one
@@ -35,25 +35,6 @@ class SecurityController extends AbstractController
 
     }
 
-    #[Route(path: '/profile/update/{id}', name: 'profile_update', methods: ['POST', 'GET'])]
-    public function profileUpdate(
-        int                    $id,
-        UserRepository         $userRepository,
-        Request                $request,
-        EntityManagerInterface $entityManager
-    ): Response
-    {
-        $user = $userRepository->find($id);
-        $userForm = $this->createForm(ProfileType::class, $user);
-        $userForm->handleRequest($request);
-        if ($userForm->isSubmitted() && $userForm->isValid()) {
-            $entityManager->persist($user);
-            $entityManager->flush();
-            $this->addFlash('success', 'Profil mis à jour!');
-            return $this->redirectToRoute('profile_update', ['id' => $id]);
-        }
 
-        return $this->render('Security/updateProfile.html.twig', ['form' => $userForm]);
-    }
 
 }
