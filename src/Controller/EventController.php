@@ -20,7 +20,8 @@ final class EventController extends AbstractController
     #[Route('', name: 'list')]
     public function list(EventRepository $eventRepository): Response
     {
-        $events = $eventRepository->findAll();
+//        $events = $eventRepository->findAll();
+        $events = $eventRepository->findPublishedEventByDate();
         return $this->render('event/list.html.twig', [
             'events' => $events,
         ]);

@@ -5,51 +5,57 @@
     <table>
         <thead>
         <tr>
-            <th>Date d'evenements</th>
-            <th>Clôturée</th>
-            <th>Inscrit / places</th>
+            <th>Nom de l'évènement</th>
+            <th>Date de l'évènement</th>
+            <th>Clôture</th>
+            <th>Inscrits / places</th>
             <th>Etat</th>
+            <th>Inscrit</th>
             <th>Organisateur</th>
             <th>Actions</th>
         </tr>
         </thead>
         <tbody>
         {% for event in events %}
-            <tr>
-                <td>{{ event.beginDateEvent|date('d/m/Y H:i') }}</td>
-                <td>{{ event.endDate|date('d/m/Y H:i') }}</td>
-                <td>{{ event.participants|length }} / {{ event.RegistrationMaxNb }}</td>
-                {#                <td>{{ event.status }}</td>#}
-                <td></td>
-
-                <td>{{ event.organiser.firstname }} {{ event.organiser.lastname }}</td>
-                <td>
-                    <a href="{{ path('events_show', {'id': event.id}) }}">Afficher</a>
-
-                    {% if app.user %}
-                        {% if app.user not in event.participants %}
-                            <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
-                        {% else %}
-                            <a href="{{ path('events_unsubscribe', {'id': event.id}) }}">Se désister</a>
-                        {% endif %}
-
-                        {% if app.user == event.organiser %}
-                            <a href="{{ path('events_update') }}">Modifier</a>
-                            <a href="{{ path('events_list', {'id' : event.id}) }}">Publier</a>
-                            <a href="{{ path('events_list', {'id' : event.id}) }}">Annuler</a>
-
-                        {% endif %}
+            {% if event.status.description not in ['En création', 'Historisée'] %}
+                <tr>
+                    <td>{{ event.name }}</td>
+                    <td>{{ event.beginDateEvent|date('d/m/Y H:i') }}</td>
+                    <td>{{ event.endDate|date('d/m/Y H:i') }}</td>
+                    <td>{{ event.participants|length }} / {{ event.RegistrationMaxNb }}</td>
+                    <td>{{ event.status.description }}</td>
+                    {% if app.user in event.participants %}
+                        <td>X</td>
+                    {% else %}
+                        <td></td>
                     {% endif %}
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td>pas d'évenement</td>
-            </tr>
+                    <td>{{ event.organiser.firstname }} {{ event.organiser.lastname }}</td>
+                    <td>
+                        <a href="{{ path('events_show', {'id': event.id}) }}">Afficher</a>
+
+                        {% if app.user %}
+                            {% if app.user not in event.participants %}
+                                <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
+                            {% else %}
+                                <a href="{{ path('events_unsubscribe', {'id': event.id}) }}">Se désister</a>
+                            {% endif %}
+
+                            {% if app.user == event.organiser %}
+                                <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>
+                                <a href="{{ path('events_list', {'id' : event.id}) }}">Publier</a>
+                                <a href="{{ path('events_list', {'id' : event.id}) }}">Annuler</a>
+
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
         {% endfor %}
         </tbody>
     </table>
     <div>
-        <a href={{ path('events_create') }}><button type="submit" >Créer une sortie</button></a>
+        <a href={{ path('events_create') }}>
+            <button type="submit">Créer une sortie</button>
+        </a>
     </div>
 {% endblock %}

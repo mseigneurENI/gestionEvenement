@@ -16,6 +16,14 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+
+    public function findPublishedEventByDate(): array{
+        $qb = $this->createQueryBuilder('e');
+        $qb
+            ->select('e')
+            ->addOrderBy('e.beginDateEvent', 'ASC');
+        return $qb->getQuery()->getResult();
+    }
     //    /**
     //     * @return Event[] Returns an array of Event objects
     //     */
