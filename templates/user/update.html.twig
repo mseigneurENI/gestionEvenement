@@ -1,4 +1,9 @@
 {% extends 'base.html.twig' %}
+{% block image %}
+{% if app.user.image %}
+    <img src="{{ asset('assets/images/profileImages/' ~ app.user.image) }}" alt="{{ app.user.username }}" width="150">
+{% endif %}
+{% endblock %}
 
 {% block title %}
     {{ parent() }} - Mise à jour du profil

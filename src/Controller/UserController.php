@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Form\ProfileType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -39,8 +40,19 @@ final class UserController extends AbstractController
         $userForm->handleRequest($request);
         if ($userForm->isSubmitted() && $userForm->isValid()) {
 
-            $plainPassword = $userForm->get('password')->getData();
+            /**
+             * @var UploadedFile $file
+             */
+            $file = $userForm->get('image')->getData();
+            if($file){
+                $newFileName = $user->getUsername() .'-'.uniqid(). '.' . $file->guessExtension();
+                $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/assets/images/profileImages';
+                $file->move($uploadsDir, $newFileName);
+                $user->setImage($newFileName);
+            }
 
+
+            $plainPassword = $userForm->get('password')->getData();
             if ($plainPassword){
                 $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($hashedPassword);
