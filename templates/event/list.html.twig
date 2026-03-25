@@ -19,7 +19,7 @@
                 <td>{{ event.beginDateEvent|date('d/m/Y H:i') }}</td>
                 <td>{{ event.endDate|date('d/m/Y H:i') }}</td>
                 <td>{{ event.participants|length }} / {{ event.RegistrationMaxNb }}</td>
-{#                <td>{{ event.status }}</td>#}
+                {#                <td>{{ event.status }}</td>#}
                 <td>{{ event.organiser.firstname }} {{ event.organiser.lastname }}</td>
                 <td>
                     <a href="{{ path('events_show', {'id': event.id}) }}">Afficher</a>
