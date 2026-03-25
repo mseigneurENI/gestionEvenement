@@ -22,8 +22,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Assert\Assert\NotBlank(messsage: 'Please choose a username')]
+    #[Assert\NotBlank(message: 'Please choose a username')]
     #[Assert\Length(min: 3, max: 180, minMessage: 'This value should be between {{ min }} and {{ max }}.')]
+    #[Assert\Regex(pattern: '/[@<>]/', message: 'Le pseudo ne doit pas contenir de symbole @, < ou >', match: false)]
     private ?string $username = null;
 
     /**
