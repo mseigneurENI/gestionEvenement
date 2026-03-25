@@ -1,20 +1,41 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Hello EventController!{% endblock %}
-
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <h1>All events</h1>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Date d'evenements</th>
+            <th>Clôturée</th>
+            <th>Inscrit / Lieu</th>
+            <th>Etat</th>
+            <th>Organisateur</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for event in events %}
+            <tr>
+                <td>{{ event.beginDateEvent|date('d/m/Y H:i') }}</td>
+                <td>{{ event.endDate|date('d/m/Y H:i') }}</td>
+                <td>{{ event.participants|length }} / {{ event.RegistrationMaxNb }}</td>
+{#                <td>{{ event.status }}</td>#}
+                <td>{{ event.organiser.firstname }} {{ event.organiser.lastname }}</td>
+{#                <td>#}
+{#                    <a href="{{ path('show', {'id': event.id}) }}">Afficher</a>#}
+{#                    <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>#}
+{#                    <a href="{{ path('events_outing', {'id': event.id}) }}">Se désister</a>#}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>D:/wamp64/www/gestionEvenement/src/Controller/EventController.php</code></li>
-        <li>Your template at <code>D:/wamp64/www/gestionEvenement/templates/event/index.html.twig</code></li>
-    </ul>
-</div>
+{#                </td>#}
+            </tr>
+{#        {% else %}#}
+{#            <tr>#}
+{#                <td>pas d'évenement</td>#}
+{#            </tr>#}
+        {% endfor %}
+        </tbody>
+    </table>
+    <div>
+        <a href={{ path('events_create') }}><button type="submit" >Créer une sortie</button></a>
+    </div>
 {% endblock %}

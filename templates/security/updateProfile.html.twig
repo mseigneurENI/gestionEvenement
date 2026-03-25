@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} - Mise à jour du profil
+{% endblock %}
+
+{% block body %}
+{{ form_start(ProfileType) }}
+    {{ form_widget(ProfileType) }}
+    <button>Valider</button>
+    {{ form_end(ProfileType) }}
+{% endblock %}
+
+
+

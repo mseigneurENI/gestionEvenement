@@ -6,11 +6,14 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
+#[UniqueEntity(fields: ['username'], message: 'This username already exists. Please find another one.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -19,6 +22,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\Assert\NotBlank(messsage: 'Please choose a username')]
+    #[Assert\Length(min: 3, max: 180, minMessage: 'This value should be between {{ min }} and {{ max }}.')]
     private ?string $username = null;
 
     /**
@@ -31,18 +36,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'Please choose a password')]
+    #[Assert\Length(min: 6, minMessage: 'Password should be {{min}} characters minimum.')]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Please enter your firstname')]
+    #[Assert\Length(max: 255, maxMessage: 'Your firstname should be {{ limit }} characters maximum.')]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Please enter your lastname')]
+    #[Assert\Length(max: 255, maxMessage: 'Your lastname should be {{ limit }} characters maximum.')]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 10, nullable: true)]
+    #[Assert\Length(max: 10, maxMessage: 'Your phone number should be {{ limit }} characters maximum.')]
     private ?string $phoneNb = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Length(max: 255, maxMessage: 'Your mail should be {{ limit }} characters maximum.')]
     private ?string $email = null;
 
     #[ORM\Column]
