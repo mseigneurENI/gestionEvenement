@@ -29,10 +29,9 @@ final class UserController extends AbstractController
                            EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
-        $id = $user->getId();
+
         if (!$user) {
-            throw $this->createNotFoundException('Profile not found');
-//            return $this->redirectToRoute('main_home');
+            return $this->redirectToRoute('app_login');
         }
         $userForm = $this->createForm(ProfileType::class, $user);
         $userForm->handleRequest($request);
@@ -40,38 +39,13 @@ final class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
             $this->addFlash('success', 'Profil mis à jour!');
-            return $this->redirectToRoute('user_update', ['id' => $id, 'user' => $user]);
+            return $this->redirectToRoute('user_update');
         }
 
-//        return $this->render('user/update.html.twig', [
-//            'controller_name' => 'UserController',
-//        ]);
-        return $this->render('user/update.html.twig', ['id' => $id, 'ProfileType' => $userForm]);
+        return $this->render('user/update.html.twig', ['ProfileType' => $userForm]);
 
     }
 
 }
 
-//#[Route(path: '/profile/update', name: 'profile_update', methods: ['POST', 'GET'])]
-//    public function profileUpdate(
-//    int                    $id,
-//    Request                $request,
-//    EntityManagerInterface $entityManager
-//): Response
-//{
-//    $user = $this->getUser();
-//    if(!$user){
-//        throw $this->createNotFoundException('Profile not found');
-////            return $this->redirectToRoute('main_home');
-//    }
-//    $userForm = $this->createForm(ProfileType::class, $user);
-//    $userForm->handleRequest($request);
-//    if ($userForm->isSubmitted() && $userForm->isValid()) {
-//        $entityManager->persist($user);
-//        $entityManager->flush();
-//        $this->addFlash('success', 'Profil mis à jour!');
-//        return $this->redirectToRoute('profile_update', ['id' => $id]);
-//    }
-//
-//    return $this->render('user/update.html.twig', ['id' => $id, 'form' => $userForm]);
-//}
+
