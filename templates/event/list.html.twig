@@ -20,6 +20,8 @@
                 <td>{{ event.endDate|date('d/m/Y H:i') }}</td>
                 <td>{{ event.participants|length }} / {{ event.RegistrationMaxNb }}</td>
                 {#                <td>{{ event.status }}</td>#}
+                <td></td>
+
                 <td>{{ event.organiser.firstname }} {{ event.organiser.lastname }}</td>
                 <td>
                     <a href="{{ path('events_show', {'id': event.id}) }}">Afficher</a>
@@ -33,8 +35,8 @@
 
                         {% if app.user == event.organiser %}
                             <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>
-                            <a href="{{ path('events_poster', {'id' : event.id}) }}">Publier</a>
-                            <a href="{{ path('events_poster', {'id' : event.id}) }}">Annuler</a>
+                            <a href="{{ path('events_list', {'id' : event.id}) }}">Publier</a>
+                            <a href="{{ path('events_list', {'id' : event.id}) }}">Annuler</a>
 
                         {% endif %}
                     {% endif %}
