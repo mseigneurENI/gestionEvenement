@@ -70,14 +70,8 @@ final class EventController extends AbstractController
             if ($event->getStatus() === null){
                 $statusEnCreation = $statusRepository->findOneBy(['description' => 'En création']);
             }
-
             if (!$statusEnCreation){
                 throw $this->createNotFoundException('Le status « en création » n\existe pas en base de données');
-            }
-
-            //on définit automatiquement la personne connectée qui créé le formulaire comme organiser de l'événement
-            if ($event->getOrganiser() === null){
-
             }
 
             $event->setStatus($statusEnCreation);
