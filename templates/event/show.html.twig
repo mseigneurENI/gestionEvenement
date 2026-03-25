@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la sortie{% endblock %}
+
+{% block body %}
+<h2>Détails de la sortie</h2>
+<div>Nom de la sortie : {{ event.name }}</div>
+<div>Date et heure de la sortie : {{ event.beginDateEvent | date('d/m/Y H:m') }}</div>
+<div>Date et heure de fin de la sortie : {{ event.endDate | date('d/m/Y H:m') }}</div>
+<div>Date limite d'inscription à la sortie : {{ event.limitDateRegistration | date('d/m/Y H:m') }}</div>
+<div>Nombre de places : {{ event.registrationMaxNb }}</div>
+<div>Campus : {{ event.campus.name }}
+    <div>Lieu : {{ event.place.name }}</div>
+    <div>Rue : {{ event.place.street }}</div>
+    <div>Code postal : {{ event.place.city.zipcode }}</div>
+    <div>Longitude : {{ event.place.longitude }}</div>
+    <div>Latitude : {{ event.place.latitude }}</div>
+
+    <h2>Liste des personnes inscrites à la sortie</h2>
+    {% for user in event.participants %}
+        <table>
+            <thead>
+            <tr>
+                <th>Pseudo</th>
+                <th>Nom</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th>{{ user.username }}</th>
+                <td>{{ user.firstname }} {{ user.lastname }}</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <th>Nombre total de participant·e·s</th>
+            <td>{{ event.participants.count }} / {{ event.registrationMaxNb }}</td>
+            </tfoot>
+        </table>
+    {% endfor %}
+
+    {% endblock %}

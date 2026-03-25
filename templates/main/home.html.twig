@@ -5,7 +5,13 @@
 {% endblock %}
 
 {% block body %}
-<h1>Liste des sorties</h1>
+    {% if not app.user %}
+    <h2>Pour continuer sur le site, veuillez vous connecter :</h2>
+    <button><a href="{{ path('app_login') }}">Se connecter</a></button>
+    {% else %}
+    <h2>Bienvenue, consultez la liste des évènements disponibles :</h2>
+    <button><a href="{{ path('events_list') }}">Evènements</a></button>
+{% endif %}
 {% endblock %}
 
 
