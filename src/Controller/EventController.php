@@ -29,8 +29,6 @@ final class EventController extends AbstractController
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'])]
     public function show(int $id, EventRepository $eventRepository): Response
     {
-
-
         $event = $eventRepository->find($id);
         if (!$event) {
             throw $this->createNotFoundException();
