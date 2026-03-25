@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('events', name: 'events_')]
 final class EventController extends AbstractController
 {
-    #[Route('', name: 'list', requirements: ['id' => '\d+'])]
+    #[Route('', name: 'list')]
     public function list(EventRepository $eventRepository): Response
     {
         $events = $eventRepository->findAll();
