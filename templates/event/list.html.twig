@@ -21,17 +21,29 @@
                 <td>{{ event.participants|length }} / {{ event.RegistrationMaxNb }}</td>
 {#                <td>{{ event.status }}</td>#}
                 <td>{{ event.organiser.firstname }} {{ event.organiser.lastname }}</td>
-{#                <td>#}
-{#                    <a href="{{ path('show', {'id': event.id}) }}">Afficher</a>#}
-{#                    <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>#}
-{#                    <a href="{{ path('events_outing', {'id': event.id}) }}">Se désister</a>#}
+                <td>
+                    <a href="{{ path('events_show', {'id': event.id}) }}">Afficher</a>
 
-{#                </td>#}
+                    {% if app.user %}
+                        {% if app.user not in event.participants %}
+                            <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
+                        {% else %}
+                            <a href="{{ path('events_unsubscribe', {'id': event.id}) }}">Se désister</a>
+                        {% endif %}
+
+                        {% if app.user == event.organiser %}
+                            <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>
+                            <a href="{{ path('events_poster', {'id' : event.id}) }}">Publier</a>
+                            <a href="{{ path('events_poster', {'id' : event.id}) }}">Annuler</a>
+
+                        {% endif %}
+                    {% endif %}
+                </td>
             </tr>
-{#        {% else %}#}
-{#            <tr>#}
-{#                <td>pas d'évenement</td>#}
-{#            </tr>#}
+        {% else %}
+            <tr>
+                <td>pas d'évenement</td>
+            </tr>
         {% endfor %}
         </tbody>
     </table>

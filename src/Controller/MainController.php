@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\EventRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,12 +16,14 @@ final class MainController extends AbstractController
     }
 
     #[Route('/cgu', name: 'main_cgu')]
-public function cgu(): Response{
+    public function cgu(): Response
+    {
         return $this->render('main/cgu.html.twig');
     }
 
     #[Route('/mentionsLegales', name: 'main_mentionsLegales')]
-public function mentionsLegales(): Response{
+    public function mentionsLegales(): Response
+    {
         return $this->render('main/mentionsLegales.html.twig');
     }
 }
