@@ -7,6 +7,7 @@ use App\Entity\Status;
 use App\Form\EventType;
 use App\Repository\EventRepository;
 use App\Repository\StatusRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,10 +42,11 @@ final class EventController extends AbstractController
 
     #[Route('/{id}/register', name: 'register', methods: ['POST', 'GET'])]
     public function register(
-        int $id,
-        EventRepository $eventRepository,
+        int                    $id,
+        EventRepository        $eventRepository,
         EntityManagerInterface $entityManager
-    ): Response {
+    ): Response
+    {
         $user = $this->getUser();
 
         $event = $eventRepository->find($id);
@@ -56,10 +58,11 @@ final class EventController extends AbstractController
 
 
     }
+
     #[Route('/{id}/unsubscribe', name: 'unsubscribe')]
     public function unsubscribe(
-        int $id,
-        EventRepository $eventRepository,
+        int                    $id,
+        EventRepository        $eventRepository,
         EntityManagerInterface $entityManager
     ): Response
     {
@@ -75,7 +78,6 @@ final class EventController extends AbstractController
 
 
     #[Route('/create', name: 'create', methods: ['POST', 'GET'])]
-    #[Route('/update/{id}', name: 'update', requirements: ['id' => '\d+'], methods: ['POST', 'GET'])]
     public function createOrUpdate(
         EntityManagerInterface $entityManager,
         EventRepository        $eventRepository,
@@ -100,10 +102,10 @@ final class EventController extends AbstractController
 
 
             //on attribue automatiquement le statut En création à la sortie
-            if ($event->getStatus() === null){
+            if ($event->getStatus() === null) {
                 $statusEnCreation = $statusRepository->findOneBy(['description' => 'En création']);
             }
-            if (!$statusEnCreation){
+            if (!$statusEnCreation) {
                 throw $this->createNotFoundException('Le status « en création » n\existe pas en base de données');
             }
 
@@ -124,13 +126,13 @@ final class EventController extends AbstractController
 
     #[Route('/delete', name: 'delete', methods: ['POST', 'GET'])]
     public function delete(
-        int $id,
-        EventRepository $eventRepository,
+        int                    $id,
+        EventRepository        $eventRepository,
         EntityManagerInterface $entityManager,
     ): Response
     {
         $event = $eventRepository->find($id);
-        if(!$event) {
+        if (!$event) {
             throw $this->createNotFoundException('Event not found');
         }
 
@@ -140,6 +142,30 @@ final class EventController extends AbstractController
 
 
     }
+    #[Route('/{id}/update', name: 'update', methods: ['GET','POST'])]
+    public function update(
+        int $id,
+        EventRepository $eventRepository,
+        EntityManagerInterface $entityManager,
+        Request $request
+    ): Response
+    {
+        $event = $eventRepository->find($id);
 
+        $eventform = $this->createForm(EventType::class, $event);
+        $eventform->handleRequest($request);
 
+        if ($eventform->isSubmitted() && $eventform->isValid()) {
+            $entityManager->persist($event);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Modification réussie');
+
+            return $this->redirectToRoute('events_show', ['id' => $event->getId()]);
+        }
+
+        return $this->render('event/update.html.twig', [
+            'eventform' => $eventform,
+        ]);
+    }
 }
