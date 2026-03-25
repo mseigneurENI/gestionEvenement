@@ -73,9 +73,12 @@ final class EventController extends AbstractController
             }
 
             $event->setStatus($statusEnCreation);
+            $event->addParticipant($this->getUser());
 
             $entityManager->persist($event);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Votre sortie a bien été créée !');
 
             return $this->redirectToRoute('events_list');
         }
