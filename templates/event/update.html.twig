@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+{% endblock %}
+
+
+{% block body %}
+
+    {% embed 'views/form/template-form.html.twig' with { form : eventform} %}
+        {% block formTitle %}Création d'une sortie{% endblock %}
+        {% block buttonLabel %}Valider{% endblock %}
+    {% endembed %}
+
+{% endblock %}

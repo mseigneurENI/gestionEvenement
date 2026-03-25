@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h2>Ajout d'un lieu</h2>
+    {% embed 'views/form/template-form.html.twig' with { form : placeForm } %}
+    {% block buttonLabel %}Valider{% endblock %}
+    {% endembed %}
+{% endblock %}
+
