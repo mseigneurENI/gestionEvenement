@@ -34,7 +34,7 @@
                         {% endif %}
 
                         {% if app.user == event.organiser %}
-                            <a href="{{ path('events_update') }}">Modifier</a>
+                            <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>
                             <a href="{{ path('events_list', {'id' : event.id}) }}">Publier</a>
                             <a href="{{ path('events_list', {'id' : event.id}) }}">Annuler</a>
 
