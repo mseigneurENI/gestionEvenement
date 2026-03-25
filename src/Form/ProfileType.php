@@ -30,6 +30,7 @@ class ProfileType extends AbstractType
                 'second_options' => ['label' => 'Confirmation :'],
                 'invalid_message' => 'Both passwords do not match.',
                 'required' => true,
+                'mapped' => false
             ])
             ->add('firstname', TextType::class, ['label' => 'Prénom :', 'required' => true, 'attr' => ['placeholder' => 'Ada']])
             ->add('lastname', TextType::class, ['label' => 'Nom :', 'required' => true, 'attr' => ['placeholder' => 'Lovelace']])
