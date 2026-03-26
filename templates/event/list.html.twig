@@ -30,7 +30,7 @@
                         {% if app.user not in event.participants %}
                             <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
                         {% else %}
-                            <a href="{{ path('events_unsubscribe', {'id': event.id}) }}">Se désister</a>
+                            <a href="{{ path('events_unsubscribe', {'id': event.id}) }}" onclick="return confirm('Etes-vous sûr de se désister?')">Se désister</a>
                         {% endif %}
 
                         {% if app.user == event.organiser %}
