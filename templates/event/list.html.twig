@@ -17,7 +17,6 @@
         </thead>
         <tbody>
         {% for event in events %}
-            {% if event.status.description not in ['En création', 'Historisée'] %}
                 <tr>
                     <td>{{ event.name }}</td>
                     <td>{{ event.beginDateEvent|date('d/m/Y H:i') }}</td>
@@ -49,7 +48,6 @@
                         {% endif %}
                     </td>
                 </tr>
-            {% endif %}
         {% endfor %}
         </tbody>
     </table>
