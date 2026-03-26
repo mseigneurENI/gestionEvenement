@@ -17,7 +17,6 @@
         </thead>
         <tbody>
         {% for event in events %}
-            {% if event.status.description not in ['En création', 'Historisée'] %}
                 <tr>
                     <td>{{ event.name }}</td>
                     <td>{{ event.beginDateEvent|date('d/m/Y H:i') }}</td>
@@ -33,23 +32,22 @@
                     <td>
                         <a href="{{ path('events_show', {'id': event.id}) }}">Afficher</a>
 
-                        {% if app.user %}
-                            {% if app.user not in event.participants %}
-                                <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
-                            {% else %}
-                                <a href="{{ path('events_unsubscribe', {'id': event.id}) }}">Se désister</a>
-                            {% endif %}
+                    {% if app.user %}
+                        {% if app.user not in event.participants %}
+                            <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
+                        {% else %}
+                            <a href="{{ path('events_unsubscribe', {'id': event.id}) }}" onclick="return confirm('Etes-vous sûr de se désister?')">Se désister</a>
+                        {% endif %}
 
-                            {% if app.user == event.organiser %}
-                                <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>
-                                <a href="{{ path('events_list', {'id' : event.id}) }}">Publier</a>
-                                <a href="{{ path('events_list', {'id' : event.id}) }}">Annuler</a>
+                        {% if app.user == event.organiser %}
+                            <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>
+                            <a href="{{ path('events_list', {'id' : event.id}) }}">Publier</a>
+                            <a href="{{ path('events_list', {'id' : event.id}) }}">Annuler</a>
 
                             {% endif %}
                         {% endif %}
                     </td>
                 </tr>
-            {% endif %}
         {% endfor %}
         </tbody>
     </table>
