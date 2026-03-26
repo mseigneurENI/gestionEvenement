@@ -209,12 +209,13 @@ final class EventController extends AbstractController
         }
 
 
-        $status = $this->statusRepository->findOneBy((array)$id);
+        $status = $this->statusRepository->findOneBy(['description' => 'Annulée']);
         $event->setStatus($status);
         $entityManagerInterface->flush();
         $this->addFlash('success', 'la sortie est annulee');
         return $this->redirectToRoute('events_show', ['id' => $id]);
     }
+
 
     #[Route('/{id}/publish', name: 'publish', methods: ['POST'])]
     public function publish(int $id, EventRepository $eventRepository, EntityManagerInterface $em): Response
