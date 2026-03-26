@@ -192,15 +192,7 @@ final class EventController extends AbstractController
             'eventform' => $eventform,
         ]);
     }
-
-    #[IsGranted('EVENT_EDIT', 'event', 'Vous ne pouvez pas annuler une sortie que vous n\'avez pas créée.')]
-    #[Route('/{id}/cancel', name: 'cancel', methods: ['POST'])]
-    public function cancel(
-        int $id,
-        EventRepository $eventRepository,
-        EntityManagerInterface $entityManagerInterface
-    ): Response
-    
+    #[Route('/{id}/cancel', name: 'cancel', methods: ['GET', 'POST'])]
     public function cancel(int $id, EventRepository $eventRepository, EntityManagerInterface $entityManagerInterface): Response
     {
         $event = $eventRepository->find($id);
@@ -210,12 +202,13 @@ final class EventController extends AbstractController
         }
 
 
-        $status = $this->statusRepository->findOneBy((array)$id);
+        $status = $this->statusRepository->findOneBy(['description' => 'Annulée']);
         $event->setStatus($status);
         $entityManagerInterface->flush();
         $this->addFlash('success', 'la sortie est annulee');
         return $this->redirectToRoute('events_show', ['id' => $id]);
     }
+
 
     #[Route('/{id}/publish', name: 'publish', methods: ['POST'])]
     public function publish(int $id, EventRepository $eventRepository, EntityManagerInterface $em): Response
