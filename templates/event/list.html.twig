@@ -11,8 +11,9 @@
         <thead>
         <tr>
             <th>Nom de l'évènement</th>
-            <th>Date de l'évènement</th>
-            <th>Clôture</th>
+            <th>Début de l'évènement</th>
+            <th>Fin de l'événement</th>
+            <th>Date limite d'inscription</th>
             <th>Inscrits / places</th>
             <th>Etat</th>
             <th>Inscrit</th>
@@ -25,7 +26,8 @@
                 <tr>
                     <td>{{ event.name }}</td>
                     <td>{{ event.beginDateEvent|date('d/m/Y H:i') }}</td>
-                    <td>{{ event.limitDateRegistration|date('d/m/Y H:i') }}</td>
+                    <td>{{ event.endDate|date('d/m/Y H:i') }}</td>
+                    <td>{{ event.limitDateRegistration | date('d/m/Y H:i') }}</td>
                     <td>{{ event.participants|length }} / {{ event.RegistrationMaxNb }}</td>
                     <td>{{ event.status.description }}</td>
                     {% if app.user in event.participants %}

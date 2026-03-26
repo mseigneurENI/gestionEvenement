@@ -7,6 +7,7 @@ use App\Entity\Event;
 use App\Entity\Place;
 use App\Repository\CampusRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -16,8 +17,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EventType extends AbstractType
 {
+
+    public function __construct(private Security $security)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+
+        $user = $this->security->getUser();
+
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom de la sortie',
@@ -44,29 +53,16 @@ class EventType extends AbstractType
                 'choice_label' => 'name',
                 'label' => 'Lieu de la sortie'
             ])
-//            ->add('status', EntityType::class, [
-//                'class' => Status::class,
-//                'choice_label' => 'description',
-//            ])
+
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
                 'choice_label' => 'name',
+                'label' => 'Campus',
                 'query_builder' => function (CampusRepository $campusRepository) {
                     return $campusRepository->createQueryBuilder('c')->addOrderBy('c.name');
+
                 }
             ]);
-//            ->add('participants', EntityType::class, [
-//                'class' => User::class,
-//                'choice_label' => 'username',
-//                'multiple' => true,
-//            ])
-//            ->add('organiser', EntityType::class, [
-//                'class' => User::class,
-//                'choice_label' => 'id',
-//            ])
-//        ;
-
-        //TODO setup the organiser and the status automatically
     }
 
     public function configureOptions(OptionsResolver $resolver): void
