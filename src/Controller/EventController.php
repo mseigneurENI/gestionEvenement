@@ -175,7 +175,7 @@ final class EventController extends AbstractController
             'eventform' => $eventform,
         ]);
     }
-    #[Route('/{id}/cancel', name: 'cancel', methods: ['POST'])]
+    #[Route('/{id}/cancel', name: 'cancel', methods: ['GET', 'POST'])]
     public function cancel(int $id, EventRepository $eventRepository, EntityManagerInterface $entityManagerInterface): Response
     {
         $event = $eventRepository->find($id);
@@ -185,12 +185,13 @@ final class EventController extends AbstractController
         }
 
 
-        $status = $this->statusRepository->findOneBy((array)$id);
+        $status = $this->statusRepository->findOneBy(['description' => 'Annulée']);
         $event->setStatus($status);
         $entityManagerInterface->flush();
         $this->addFlash('success', 'la sortie est annulee');
         return $this->redirectToRoute('events_show', ['id' => $id]);
     }
+
 
     #[Route('/{id}/publish', name: 'publish', methods: ['POST'])]
     public function publish(int $id, EventRepository $eventRepository, EntityManagerInterface $em): Response

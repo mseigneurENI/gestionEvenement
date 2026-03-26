@@ -16,7 +16,6 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
-
     public function findPublishedEventByDate(): array{
         $qb = $this->createQueryBuilder('e');
         $qb
