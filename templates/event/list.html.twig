@@ -35,7 +35,7 @@
                     {% else %}
                         <td></td>
                     {% endif %}
-                    <td>{{ event.organiser.firstname }} {{ event.organiser.lastname }}</td>
+                    <td><a href="{{ path('user_show', {'id': event.organiser.id}) }}">{{ event.organiser.firstname }} {{ event.organiser.lastname }}</a></td>
                     <td>
                         <a href="{{ path('events_show', {'id': event.id}) }}">Afficher</a>
 
