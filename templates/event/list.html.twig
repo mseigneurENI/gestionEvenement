@@ -2,6 +2,11 @@
 {% block body %}
     <h1>All events</h1>
 
+    <div>
+        <h2>Filtrer les sorties</h2>
+        {{ form(filtreForm) }}
+    </div>
+
     <table>
         <thead>
         <tr>
@@ -20,7 +25,7 @@
                 <tr>
                     <td>{{ event.name }}</td>
                     <td>{{ event.beginDateEvent|date('d/m/Y H:i') }}</td>
-                    <td>{{ event.endDate|date('d/m/Y H:i') }}</td>
+                    <td>{{ event.limitDateRegistration|date('d/m/Y H:i') }}</td>
                     <td>{{ event.participants|length }} / {{ event.RegistrationMaxNb }}</td>
                     <td>{{ event.status.description }}</td>
                     {% if app.user in event.participants %}
