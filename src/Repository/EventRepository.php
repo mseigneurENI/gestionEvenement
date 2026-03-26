@@ -28,7 +28,7 @@ class EventRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findFilteredEvents(?Campus $campus = null, ?string $search = '', ?\DateTimeInterface $beginDate = null, ?\DateTimeInterface $endDate = null, array $checkboxes = []): array
+    public function findFilteredEvents(?Campus $campus = null, ?string $search = '', ?\DateTimeInterface $beginDate = null, ?\DateTimeInterface $endDate = null, array $checkboxes = [], $user = null, $id = null): array
     {
         $qb = $this->createQueryBuilder('e');
         $qb
@@ -49,6 +49,28 @@ class EventRepository extends ServiceEntityRepository
         if ($endDate) {
             $qb->andWhere('e.beginDateEvent <= :endDate')
                 ->setParameter('endDate', $endDate);
+        }
+
+        if ($checkboxes) {
+            if(in_array('organisateur', $checkboxes)) {
+                $qb->andWhere('e.organiser = :user')
+                    ->setParameter('user', $user);
+            }
+
+            if (in_array('enregistre', $checkboxes)) {
+                $qb->leftJoin('e.participants', 'p')
+                    ->andWhere('p.id = :id' )
+                    ->setParameter('id', $id);
+            }
+
+            if (in_array('libre', $checkboxes)) {
+                $qb->andWhere(':id NOT MEMBER OF e.participants')
+                    ->setParameter('id', $id);
+            }
+
+            if (in_array('terminee', $checkboxes)) {
+                $qb->andWhere('e.status in (5)');
+            }
         }
 
         $qb->orderBy('e.beginDateEvent', 'ASC');

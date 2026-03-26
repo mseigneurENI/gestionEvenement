@@ -41,8 +41,8 @@ class FiltreEventType extends AbstractType
             ->add('checkbox', ChoiceType::class, [
                 'choices' => [
                     'Sorties dont je suis l\'organisateur/trice' => 'organisateur',
-                    'Sorties auxquelles je suis inscrit/e' => 'inscrit',
-                    'Sorties auxquelles je ne suis pas inscrit/e' => 'nonInscrit',
+                    'Sorties auxquelles je suis inscrit/e' => 'enregistre',
+                    'Sorties auxquelles je ne suis pas inscrit/e' => 'libre',
                     'Sorties passées' => 'terminee'
                 ],
                 'expanded' => true,
