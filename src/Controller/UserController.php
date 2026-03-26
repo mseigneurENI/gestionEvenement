@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\ProfileType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -23,16 +24,11 @@ final class UserController extends AbstractController
 //
 //    }
 
-
-
-
-
     #[Route('/update', name: 'update', methods: ['POST', 'GET'])]
     public function update(Request $request,
                            EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = $this->getUser();
-
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
@@ -66,6 +62,16 @@ final class UserController extends AbstractController
 
         return $this->render('user/update.html.twig', ['ProfileType' => $userForm]);
 
+    }
+
+    #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'])]
+    public function show(int $id, UserRepository $userRepository): Response
+    {
+        $user = $userRepository->find($id);
+        if (!$user){
+            throw $this->createNotFoundException();
+        }
+        return $this->render('user/show.html.twig', ['user' => $user]);
     }
 
 }

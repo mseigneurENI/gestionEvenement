@@ -1,1 +1,10 @@
 {% extends 'base.html.twig' %}
+{% block body %}
+
+    <div><img src="{{ asset('assets/images/profileImages/' ~ user.image) }}" alt="{{ user.username }}"></div>
+    <div>Prénom : {{ user.firstname }}</div>
+    <div>Nom : {{ user.lastname }}</div>
+    <div>Numéro de téléphone :{{ user.phoneNb }}</div>
+    <div>Adresse mail :{{ user.email }}</div>
+    <div>Campus :{{ user.campus.name }}</div>
+{% endblock %}
