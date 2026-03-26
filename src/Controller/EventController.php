@@ -200,8 +200,7 @@ final class EventController extends AbstractController
         EventRepository $eventRepository,
         EntityManagerInterface $entityManagerInterface
     ): Response
-    
-    public function cancel(int $id, EventRepository $eventRepository, EntityManagerInterface $entityManagerInterface): Response
+
     {
         $event = $eventRepository->find($id);
 
