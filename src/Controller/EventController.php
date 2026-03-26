@@ -18,7 +18,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('events', name: 'events_')]
 final class EventController extends AbstractController
-{
+{        private StatusRepository $statusRepository;
+
+    public function __construct(StatusRepository $statusRepository){
+        $this->statusRepository = $statusRepository;
+    }
+
     #[Route('', name: 'list')]
     public function list(Request $request, EventRepository $eventRepository, CampusRepository $campusRepository): Response
     {
@@ -195,6 +200,8 @@ final class EventController extends AbstractController
         EventRepository $eventRepository,
         EntityManagerInterface $entityManagerInterface
     ): Response
+    
+    public function cancel(int $id, EventRepository $eventRepository, EntityManagerInterface $entityManagerInterface): Response
     {
         $event = $eventRepository->find($id);
 
