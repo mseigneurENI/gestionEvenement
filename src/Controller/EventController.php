@@ -33,8 +33,10 @@ $events = $eventRepository->findPublishedEventByDate();
        $beginDate = $data['beginDate'];
        $endDate = $data['endDate'];
        $checkboxes = $data['checkbox'];
+       $user = $this->getUser(); //récupération de l'utilisateur actif pour l'utiliser dans le EventRepository
+       $id = $user->getId();
 
-       $events = $eventRepository->findFilteredEvents($campus, $search, $beginDate, $endDate, $checkboxes);
+       $events = $eventRepository->findFilteredEvents($campus, $search, $beginDate, $endDate, $checkboxes, $user, $id);
    }
     return $this->render('event/list.html.twig', ['events' => $events, 'filtreForm' => $filtreForm]);
     }
