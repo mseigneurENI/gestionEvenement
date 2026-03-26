@@ -192,8 +192,15 @@ final class EventController extends AbstractController
             'eventform' => $eventform,
         ]);
     }
-    #[Route('/{id}/cancel', name: 'cancel', methods: ['GET', 'POST'])]
-    public function cancel(int $id, EventRepository $eventRepository, EntityManagerInterface $entityManagerInterface): Response
+
+    #[IsGranted('EVENT_EDIT', 'event', 'Vous ne pouvez pas annuler une sortie que vous n\'avez pas créée.')]
+    #[Route('/{id}/cancel', name: 'cancel', methods: ['POST'])]
+    public function cancel(
+        int $id,
+        EventRepository $eventRepository,
+        EntityManagerInterface $entityManagerInterface
+    ): Response
+//TODO corriger les paramètres de la fonction pour remplacer int $id par Event $event
     {
         $event = $eventRepository->find($id);
 
