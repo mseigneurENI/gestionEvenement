@@ -30,7 +30,6 @@ class EventRepository extends ServiceEntityRepository
 
     public function findFilteredEvents(?Campus $campus = null, ?string $search = '', ?\DateTimeInterface $beginDate = null, ?\DateTimeInterface $endDate = null, array $checkboxes = [], $user = null, $id = null): array
     {
-//        $participants = $this->findBy(['participants']);
         $qb = $this->createQueryBuilder('e');
         $qb
             ->select('e')
@@ -51,8 +50,6 @@ class EventRepository extends ServiceEntityRepository
             $qb->andWhere('e.beginDateEvent <= :endDate')
                 ->setParameter('endDate', $endDate);
         }
-
-
 
         if ($checkboxes) {
             if(in_array('organisateur', $checkboxes)) {
