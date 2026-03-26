@@ -33,7 +33,7 @@
                         <a href="{{ path('events_show', {'id': event.id}) }}">Afficher</a>
 
                     {% if app.user %}
-                        {% if app.user not in event.participants %}
+                        {% if app.user not in event.participants and app.user != event.organiser %}
                             <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
                         {% else %}
                             <a href="{{ path('events_unsubscribe', {'id': event.id}) }}" onclick="return confirm('Etes-vous sûr de se désister?')">Se désister</a>
