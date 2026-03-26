@@ -16,7 +16,12 @@ use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('events', name: 'events_')]
 final class EventController extends AbstractController
-{
+{        private StatusRepository $statusRepository;
+
+    public function __construct(StatusRepository $statusRepository){
+        $this->statusRepository = $statusRepository;
+    }
+
     #[Route('', name: 'list')]
     public function list(EventRepository $eventRepository): Response
     {
@@ -125,7 +130,7 @@ final class EventController extends AbstractController
     }
 
 
-    #[Route('/delete', name: 'delete', methods: ['POST', 'GET'])]
+    #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
     public function delete(
         int                    $id,
         EventRepository        $eventRepository,
@@ -134,11 +139,12 @@ final class EventController extends AbstractController
     {
         $event = $eventRepository->find($id);
         if (!$event) {
-            throw $this->createNotFoundException('Event not found');
+            throw $this->createNotFoundException('event not found');
         }
 
-        $event->remove();
+        $entityManager->remove($event);
         $entityManager->flush();
+        $this->addFlash('succes', 'Supperession réussie');
         return $this->redirectToRoute('events_list');
 
 
@@ -169,4 +175,40 @@ final class EventController extends AbstractController
             'eventform' => $eventform,
         ]);
     }
+    #[Route('/{id}/cancel', name: 'cancel', methods: ['POST'])]
+    public function cancel(int $id, EventRepository $eventRepository, EntityManagerInterface $entityManagerInterface): Response
+    {
+        $event = $eventRepository->find($id);
+
+        if ($event->getOrganiser() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException();
+        }
+
+
+        $status = $this->statusRepository->findOneBy((array)$id);
+        $event->setStatus($status);
+        $entityManagerInterface->flush();
+        $this->addFlash('success', 'la sortie est annulee');
+        return $this->redirectToRoute('events_show', ['id' => $id]);
+    }
+
+    #[Route('/{id}/publish', name: 'publish', methods: ['POST'])]
+    public function publish(int $id, EventRepository $eventRepository, EntityManagerInterface $em): Response
+    {
+        $event = $eventRepository->find($id);
+
+        if ($event->getOrganiser() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $status = $this->statusRepository->findOneBy(['description' => 'Ouverte']);
+
+
+        $event->setStatus($status);
+        $em->flush();
+
+        $this->addFlash('success', 'La sortie est publiée');
+        return $this->redirectToRoute('events_show', ['id' => $id]);
+    }
+
 }
