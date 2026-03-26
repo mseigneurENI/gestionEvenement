@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Event;
 use App\Entity\Status;
 use App\Form\EventType;
+use App\Form\FiltreEventType;
+use App\Repository\CampusRepository;
 use App\Repository\EventRepository;
 use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManager;
@@ -13,19 +15,28 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use function Symfony\Component\Clock\now;
 
 #[Route('events', name: 'events_')]
 final class EventController extends AbstractController
 {
     #[Route('', name: 'list')]
-    public function list(EventRepository $eventRepository): Response
+    public function list(Request $request, EventRepository $eventRepository, CampusRepository $campusRepository): Response
     {
-//        $events = $eventRepository->findAll();
-        $events = $eventRepository->findPublishedEventByDate();
-        return $this->render('event/list.html.twig', [
-            'events' => $events,
-        ]);
+$filtreForm = $this->createForm(FiltreEventType::class);
+$filtreForm->handleRequest($request);
+$events = $eventRepository->findPublishedEventByDate();
+   if($filtreForm->isSubmitted() && $filtreForm->isValid()) {
+       $data = $filtreForm->getData();
+       $campus = $data['campus'] ;
+       $search = $data['search'];
+       $beginDate = $data['beginDate'];
+       $endDate = $data['endDate'];
+       $checkboxes = $data['checkbox'];
 
+       $events = $eventRepository->findFilteredEvents($campus, $search, $beginDate, $endDate, $checkboxes);
+   }
+    return $this->render('event/list.html.twig', ['events' => $events, 'filtreForm' => $filtreForm]);
     }
 
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'])]
