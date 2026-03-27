@@ -25,11 +25,13 @@ final class EventController extends AbstractController
     }
 
     #[Route('', name: 'list')]
-    public function list(Request $request, EventRepository $eventRepository, CampusRepository $campusRepository): Response
+    public function list(Request $request, EventRepository $eventRepository): Response
     {
         $filtreForm = $this->createForm(FiltreEventType::class);
         $filtreForm->handleRequest($request);
+
         $events = $eventRepository->findPublishedEventByDate();
+
         if ($filtreForm->isSubmitted() && $filtreForm->isValid()) {
             $data = $filtreForm->getData();
             $campus = $data['campus'];
