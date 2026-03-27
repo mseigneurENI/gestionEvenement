@@ -1,7 +1,9 @@
 {% extends 'base.html.twig' %}
 {% block image %}
 {% if app.user.image %}
-    <img src="{{ asset('assets/images/profileImages/' ~ app.user.image) }}" alt="{{ app.user.username }}" width="150">
+    <img src="{{ asset('assets/images/profileImages/' ~ app.user.image) }}" alt="{{ app.user.username }}">
+    {% else %}
+        <img src="{{ asset('/images/image-profil-defaut.png') }}" alt="profil">
 {% endif %}
 {% endblock %}
 
