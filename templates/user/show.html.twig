@@ -6,6 +6,7 @@
     {% else %}
     <div><img src="{{ asset('/images/image-profil-defaut.png') }}" alt="{{ user.username }}"></div>
     {% endif %}
+    <h2>{{ user.username }}</h2>
     <div>Prénom : {{ user.firstname }}</div>
     <div>Nom : {{ user.lastname }}</div>
     <div>Numéro de téléphone : {{ user.phoneNb }}</div>
