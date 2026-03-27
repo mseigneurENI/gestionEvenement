@@ -127,7 +127,7 @@ final class EventController extends AbstractController
                 $statusEnCreation = $statusRepository->findOneBy(['description' => 'En création']);
             }
             if (!$statusEnCreation) {
-                throw $this->createNotFoundException('Le status « en création » n\existe pas en base de données');
+                throw $this->createNotFoundException('Le status « en création » n\'existe pas en base de données');
             }
 
             $event->setStatus($statusEnCreation);

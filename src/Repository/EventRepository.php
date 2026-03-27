@@ -23,7 +23,7 @@ class EventRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('e');
         $qb
             ->select('e')
-            ->andwhere('e.status NOT IN (1, 7)')
+            ->andwhere('e.status NOT IN (7)')
             ->addOrderBy('e.beginDateEvent', 'ASC');
         return $qb->getQuery()->getResult();
     }
@@ -33,7 +33,7 @@ class EventRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('e');
         $qb
             ->select('e')
-            ->andwhere('e.status NOT IN (1, 7)');
+            ->andwhere('e.status NOT IN (7)');
         if ($campus) {
             $qb->andWhere('e.campus = :campus')
                 ->setParameter('campus', $campus);
