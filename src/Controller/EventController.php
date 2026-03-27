@@ -18,9 +18,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('events', name: 'events_')]
 final class EventController extends AbstractController
-{        private StatusRepository $statusRepository;
+{
+    private StatusRepository $statusRepository;
 
-    public function __construct(StatusRepository $statusRepository){
+    public function __construct(StatusRepository $statusRepository)
+    {
         $this->statusRepository = $statusRepository;
     }
 
@@ -58,6 +60,17 @@ final class EventController extends AbstractController
 
     }
 
+    #[Route('/myEvents', name: 'my_Events')]
+    public function showMine(
+        EventRepository $eventRepository
+    )
+    {
+        $user = $this->getUser();
+        $myEvents = $eventRepository->findMyEvents($user);
+
+        return $this->render('event/myEvents.html.twig', ['myEvents' => $myEvents]);
+    }
+
     #[Route('/{id}/register', name: 'register', methods: ['POST', 'GET'])]
     public function register(
         int                    $id,
@@ -68,13 +81,14 @@ final class EventController extends AbstractController
         $user = $this->getUser();
 
         $event = $eventRepository->find($id);
+        if ($event->getStatus()->getDescription() !== 'Ouverte') {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas vous inscrire à cette sortie');
+        }
         $event->addParticipant($user);
         $entityManager->flush();
 
         $this->addFlash('register', 'Inscription réussie');
         return $this->redirectToRoute('events_list');
-
-
     }
 
     #[Route('/{id}/unsubscribe', name: 'unsubscribe')]
@@ -198,8 +212,8 @@ final class EventController extends AbstractController
     #[IsGranted('EVENT_EDIT', 'event', 'Vous ne pouvez pas annuler une sortie que vous n\'avez pas créée.')]
     #[Route('/{id}/cancel', name: 'cancel', methods: ['POST'])]
     public function cancel(
-        int $id,
-        EventRepository $eventRepository,
+        int                    $id,
+        EventRepository        $eventRepository,
         EntityManagerInterface $entityManagerInterface
     ): Response
 //TODO corriger les paramètres de la fonction pour remplacer int $id par Event $event
