@@ -1,12 +1,78 @@
 body {
     background-color: #bcb4f6;
 }
+
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 main{
     min-height: 90vh;
 }
 
+footer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+footer p{
+    text-align: center;
+}
+
+.logo{
+    margin: 5px;
+    max-width: 100px;
+}
+
+nav{
+    justify-content: center;
+}
+
+h1{
+    font-family: "Coiny", system-ui;
+}
+
+h2{
+    font-family: "Coiny", system-ui;
+}
+
 img {
     max-width: 300px;
+    margin: 25px;
+}
+
+a{
+    color: #555555;
+    text-decoration: none;
+}
+
+a:hover{
+font-weight: bolder;
+}
+
+button{
+    appearance: none;
+    border: none;
+    background-color: #67e9ff;
+    box-shadow: 5px 5px 15px #555555;
+    width: fit-content;
+    margin: auto;
+}
+
+.main-body{
+    display: flex;
+    flex-direction: column;
+    /*justify-content: center;*/
+    align-items: center;
 }
 
 @media screen and (max-width: 800px){
