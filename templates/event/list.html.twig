@@ -82,13 +82,6 @@
 
                                 {% else %}
                                     <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>
-
-                                    {% if event.status.description == 'Ouverte' %}
-                                        <a href="{{ path('events_cancel', {'id': event.id}) }}"
-                                           onclick="return confirm('Etes vous sûr de vouloir supprimer cette sortie?')">
-                                            Annuler
-                                        </a>
-                                    {% endif %}
                                 {% endif %}
 
                             {% endif %}
