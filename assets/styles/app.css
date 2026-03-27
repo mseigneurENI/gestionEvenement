@@ -1,5 +1,5 @@
 body {
-    background-color: #bcb4f6;
+    background-color: rgb(188, 180, 264, 100);
 }
 
 .container{
@@ -51,7 +51,7 @@ img {
 }
 
 a{
-    color: #555555;
+    color: #2D3138;
     text-decoration: none;
 }
 
@@ -59,20 +59,83 @@ a:hover{
 font-weight: bolder;
 }
 
+.container-btn{
+    display: flex;
+    justify-content: center;
+    margin:20px;
+}
+
 button{
     appearance: none;
     border: none;
-    background-color: #67e9ff;
-    box-shadow: 5px 5px 15px #555555;
+    background-color: rgba(103, 233, 255, 100);
+    color: #2D3138;
+    box-shadow: 5px 5px 15px rgba(85, 85, 85, 100);
     width: fit-content;
     margin: auto;
+}
+
+button:hover{
+    background: linear-gradient(135deg, rgba(103, 233, 255, 100), rgb(11, 178, 205));
 }
 
 .main-body{
     display: flex;
     flex-direction: column;
-    /*justify-content: center;*/
     align-items: center;
+}
+
+.container-form{
+    max-width: 1200px;
+    margin: auto;
+}
+
+.container-date{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.container-checkbox{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+input[type="checkbox"]{
+    display: flex;
+    flex-direction: column;
+}
+
+table th:first-child {
+    border-top-left-radius: 15px;
+}
+table th:last-child {
+    border-top-right-radius: 15px;
+}
+table tr:last-child td:first-child {
+    border-bottom-left-radius: 15px;
+}
+table tr:last-child td:last-child {
+    border-bottom-right-radius: 15px;
+}
+
+table{
+    box-shadow: 5px 5px 15px rgba(85, 85, 85, 100);
+    border-radius: 15px;
+}
+
+table th{
+    background-color: rgb(255, 239, 190);
+}
+
+/*table tr:nth-child(even) {*/
+/*    background-color: #95aabf;*/
+/*}*/
+
+table a:hover{
+    font-weight: normal;
+    color: #fd50a6;
 }
 
 @media screen and (max-width: 800px){
