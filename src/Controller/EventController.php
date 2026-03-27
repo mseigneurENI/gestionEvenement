@@ -72,6 +72,7 @@ final class EventController extends AbstractController
         return $this->render('event/myEvents.html.twig', ['myEvents' => $myEvents]);
     }
 
+    #[IsGranted("EVENT_REGISTER", 'event', "Vous ne pouvez pas vous inscrire à cette sortie")]
     #[Route('/{id}/register', name: 'register', methods: ['POST', 'GET'])]
     public function register(
         int                    $id,
