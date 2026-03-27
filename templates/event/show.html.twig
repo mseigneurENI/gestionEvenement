@@ -39,28 +39,26 @@
     {% endfor %}
 
     <div>
+        {% if event.status.description == 'Annulée' %}
+            <p style="color: red; font-weight: bold;">Cette sortie est annulée :(</p>
+        {% else %}
+             Boutons pour l'organisateur + admin
             {% if app.user and (app.user == event.organiser or is_granted('ROLE_ADMIN')) %}
                 {% if event.status.description != 'Ouverte' %}
-
                     <form action="{{ path('events_publish', {'id': event.id}) }}" method="post">
-                    <button type="submit">Publier la sortie</button>
-                </form>
+                        <button type="submit">Publier la sortie</button>
+                    </form>
+                    <form action="{{ path('events_delete', {'id': event.id}) }}" method="post">
+                        <button type="submit" onclick="return confirm('Supprimer définitivement cette sortie ?')">Supprimer la sortie</button>
+                    </form>
+                {% else %}
+                    <form action="{{ path('events_cancel', {'id': event.id}) }}" method="post">
+                        <button type="submit" onclick="return confirm('Etes vous sûr de vouloir supprimer cette sortie ?')">Annuler la sortie</button>
+                    </form>
                 {% endif %}
-{#                {% if event.status.description == 'En cours' %}#}
-                <form action="{{ path('events_delete', {'id': event.id}) }}" method="post">
-                    <button type="submit" onclick="return confirm('la sortie sera supprimmer definitivement ?')">Supprimer la sortie</button>
-                </form>
-                    {% endif %}
-                {% if event.status.description == 'Ouverte' %}
-                <form action="{{ path('events_cancel', {'id': event.id}) }}" method="post">
-                    <button type="submit" onclick="return confirm('Etes vous sûr de vouloir supprimer cette sortie ?')">Annuler la sortie</button>
-                </form>
-                {% endif %}
-                {% if event.status.description == 'Annulée' %}
-
-{#            {% endif %}#}
+            {% endif %}
         {% endif %}
+    </div>
 
-        </div>
 
     {% endblock %}

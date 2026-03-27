@@ -31,18 +31,31 @@
                     <td>{{ event.organiser.firstname }} {{ event.organiser.lastname }}</td>
                     <td>
                         <a href="{{ path('events_show', {'id': event.id}) }}">Afficher</a>
+                        {% if app.user %}
+                            {% if event.status.description != 'Annulée' %}
+                                {% if app.user != event.organiser %}
 
-                    {% if app.user %}
-                        {% if app.user not in event.participants and app.user != event.organiser %}
-                            <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
-                        {% else %}
-                            <a href="{{ path('events_unsubscribe', {'id': event.id}) }}" onclick="return confirm('Etes-vous sûr de se désister?')">Se désister</a>
-                        {% endif %}
+                                    {% if event.status.description == 'Ouverte' %}
+                                        {% if app.user not in event.participants %}
+                                            <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
+                                        {% else %}
+                                            <a href="{{ path('events_unsubscribe', {'id': event.id}) }}"
+                                               onclick="return confirm('Etes-vous sûr de se désister?')">
+                                                Se désister
+                                            </a>
+                                        {% endif %}
+                                    {% endif %}
 
-                        {% if app.user == event.organiser %}
-                            <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>
-                            <a href="{{ path('events_list', {'id' : event.id}) }}">Publier</a>
-                            <a href="{{ path('events_list', {'id' : event.id}) }}">Annuler</a>
+                                {% else %}
+                                    <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>
+
+                                    {% if event.status.description == 'Ouverte' %}
+                                        <a href="{{ path('events_cancel', {'id': event.id}) }}"
+                                           onclick="return confirm('Etes vous sûr de vouloir supprimer cette sortie?')">
+                                            Annuler
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
 
                             {% endif %}
                         {% endif %}
