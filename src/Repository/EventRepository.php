@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Campus;
 use App\Entity\Event;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,6 +18,16 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+    public function findMyEvents(User $user): array
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb
+            ->select('e')
+            ->andWhere('e.organiser = :user')
+            ->setParameter('user', $user);
+
+        return $qb->getQuery()->getResult();
+    }
 
     public function findPublishedEventByDate(): array
     {
@@ -27,7 +38,8 @@ class EventRepository extends ServiceEntityRepository
             ->leftJoin('e.status', 'status')
             ->leftJoin('e.organiser', 'organiser')
             ->leftJoin('e.participants', 'participants')
-            ->addSelect('status', 'organiser', 'participants')
+            ->leftJoin('e.campus', 'campus')
+            ->addSelect('status', 'organiser', 'participants', 'campus')
             ->addOrderBy('e.beginDateEvent', 'ASC');
         return $qb->getQuery()->getResult();
     }
