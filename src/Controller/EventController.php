@@ -4,6 +4,7 @@ namespace App\Controller;
 
 
 use App\Entity\Event;
+use App\Form\CancellationFormType;
 use App\Form\EventType;
 use App\Form\FiltreEventType;
 use App\Repository\CampusRepository;
@@ -18,9 +19,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('events', name: 'events_')]
 final class EventController extends AbstractController
-{        private StatusRepository $statusRepository;
+{
+    private StatusRepository $statusRepository;
 
-    public function __construct(StatusRepository $statusRepository){
+    public function __construct(StatusRepository $statusRepository)
+    {
         $this->statusRepository = $statusRepository;
     }
 
@@ -193,32 +196,8 @@ final class EventController extends AbstractController
         ]);
     }
 
-    #[IsGranted('EVENT_EDIT', 'event', 'Vous ne pouvez pas annuler une sortie que vous n\'avez pas créée.')]
-    #[Route('/{id}/cancel', name: 'cancel', methods: ['POST'])]
-    public function cancel(
-        int $id,
-        EventRepository $eventRepository,
-        EntityManagerInterface $entityManagerInterface
-    ): Response
-//TODO corriger les paramètres de la fonction pour remplacer int $id par Event $event
-    {
-        $event = $eventRepository->find($id);
-
-        if ($event->getOrganiser() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
-            throw $this->createAccessDeniedException();
-        }
-
-
-        $status = $this->statusRepository->findOneBy(['description' => 'Annulée']);
-        $event->setStatus($status);
-        $entityManagerInterface->flush();
-        $this->addFlash('success', 'la sortie est annulee');
-        return $this->redirectToRoute('events_show', ['id' => $id]);
-    }
-
-
     #[Route('/{id}/publish', name: 'publish', methods: ['POST'])]
-    public function publish(int $id, EventRepository $eventRepository, EntityManagerInterface $em): Response
+    public function publish(int $id, EventRepository $eventRepository, EntityManagerInterface $entityManagerinterface): Response
     {
         $event = $eventRepository->find($id);
 
@@ -230,9 +209,51 @@ final class EventController extends AbstractController
 
 
         $event->setStatus($status);
-        $em->flush();
+        $entityManagerinterface->flush();
 
         $this->addFlash('success', 'La sortie est publiée');
         return $this->redirectToRoute('events_show', ['id' => $id]);
+    }
+
+
+    #[Route('/{id}/reasonCancel', name: 'reasonCancel', methods: ['GET', 'POST'])]
+    public function cancelReason(
+        int                    $id,
+        EventRepository        $eventRepository,
+        Request                $request,
+        EntityManagerInterface $entityManagerinterface
+    ): Response
+    {
+        ////TODO corriger les paramètres de la fonction pour remplacer int $id par Event $event
+        $event = $eventRepository->find($id);
+        if (!$event) {
+            throw $this->createNotFoundException();
+        }
+
+        if ($event->getOrganiser() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $form = $this->createForm(CancellationFormType::class);
+        $event = $eventRepository->find($id);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $reason = $form->get('reason')->getData();
+
+
+            $cancelledStatus = $this->statusRepository->findOneBy(['description' => 'Annulée']);
+            $event->setStatus($cancelledStatus);
+            $event->setCancellationReason($reason);
+            $entityManagerinterface->flush();
+
+            $this->addFlash('success', 'Sortie annulée avec motif : ' . $reason);
+            return $this->redirectToRoute('events_show', ['id' => $id]);
+        }
+
+        return $this->render('event/reasonCancel.html.twig', [
+            'form' => $form->createView(),
+            'event' => $event,
+        ]);
     }
 }

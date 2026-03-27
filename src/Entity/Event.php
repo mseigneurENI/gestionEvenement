@@ -60,6 +60,9 @@ class Event
     #[ORM\JoinColumn(nullable: false)]
     private ?User $organiser = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $cancellationReason = null;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -210,6 +213,18 @@ class Event
     public function setOrganiser(?User $organiser): static
     {
         $this->organiser = $organiser;
+
+        return $this;
+    }
+
+    public function getCancellationReason(): ?string
+    {
+        return $this->cancellationReason;
+    }
+
+    public function setCancellationReason(string $cancellationReason): static
+    {
+        $this->cancellationReason = $cancellationReason;
 
         return $this;
     }
