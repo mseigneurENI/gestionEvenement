@@ -2,17 +2,19 @@
 
 namespace App\Controller;
 
+
 use App\Entity\Event;
-use App\Entity\Status;
 use App\Form\EventType;
+use App\Form\FiltreEventType;
+use App\Repository\CampusRepository;
 use App\Repository\EventRepository;
 use App\Repository\StatusRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('events', name: 'events_')]
 final class EventController extends AbstractController
@@ -23,14 +25,22 @@ final class EventController extends AbstractController
     }
 
     #[Route('', name: 'list')]
-    public function list(EventRepository $eventRepository): Response
+    public function list(Request $request, EventRepository $eventRepository, CampusRepository $campusRepository): Response
     {
-//        $events = $eventRepository->findAll();
+        $filtreForm = $this->createForm(FiltreEventType::class);
+        $filtreForm->handleRequest($request);
         $events = $eventRepository->findPublishedEventByDate();
-        return $this->render('event/list.html.twig', [
-            'events' => $events,
-        ]);
+        if ($filtreForm->isSubmitted() && $filtreForm->isValid()) {
+            $data = $filtreForm->getData();
+            $campus = $data['campus'];
+            $search = $data['search'];
+            $beginDate = $data['beginDate'];
+            $endDate = $data['endDate'];
+            $checkboxes = $data['checkbox'];
 
+            $events = $eventRepository->findFilteredEvents($campus, $search, $beginDate, $endDate, $checkboxes);
+        }
+        return $this->render('event/list.html.twig', ['events' => $events, 'filtreForm' => $filtreForm]);
     }
 
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'])]
@@ -41,7 +51,7 @@ final class EventController extends AbstractController
             throw $this->createNotFoundException();
         }
         return $this->render('event/show.html.twig', [
-            'event' => $event,
+            'event' => $event
         ]);
 
     }
@@ -84,20 +94,25 @@ final class EventController extends AbstractController
 
 
     #[Route('/create', name: 'create', methods: ['POST', 'GET'])]
-    public function createOrUpdate(
+    public function create(
         EntityManagerInterface $entityManager,
-        EventRepository        $eventRepository,
+//        EventRepository        $eventRepository,
         StatusRepository       $statusRepository,
         Request                $request,
         int                    $id = null
     ): Response
     {
         $event = new Event();
-        if ($id != null) {
-            $event = $eventRepository->find($id);
-            if ($event->getOrganiser() != $this->getUser()) {
-                throw $this->createAccessDeniedException("Vous ne pouvez pas modifier une sortie que vous n'avez pas crée.");
-            }
+//        if ($id != null) {
+//            $event = $eventRepository->find($id);
+//            if ($event->getOrganiser() != $this->getUser()) {
+//                throw $this->createAccessDeniedException("Vous ne pouvez pas modifier une sortie que vous n'avez pas créée.");
+//            }
+//        }
+
+        $user = $this->getUser();
+        if ($user && $user->getCampus()) { //on vérifie que l'utilisateur existe, donc qu'il est connecté ET qu'il a un campus
+            $event->setCampus($user->getCampus());
         }
 
         $eventForm = $this->createForm(EventType::class, $event);
@@ -129,35 +144,37 @@ final class EventController extends AbstractController
         return $this->render($id ? 'event/update.html.twig' : 'event/create.html.twig', ['eventForm' => $eventForm]);
     }
 
-
-    #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
+    #[IsGranted('EVENT_DELETE', 'event', 'Vous ne pouvez pas supprimer une sortie que vous n\'avez pas créée.')]
+    #[Route('/{id}/delete', name: 'delete', methods: ['POST', 'GET'])]
     public function delete(
-        int                    $id,
-        EventRepository        $eventRepository,
+//        int                    $id,
+        Event                  $event,
+//        EventRepository        $eventRepository,
         EntityManagerInterface $entityManager,
     ): Response
     {
-        $event = $eventRepository->find($id);
-        if (!$event) {
-            throw $this->createNotFoundException('event not found');
-        }
+//        $event = $eventRepository->find($id);
+//        if (!$event) {
+//            throw $this->createNotFoundException('Event not found');
+//        }
 
         $entityManager->remove($event);
         $entityManager->flush();
         $this->addFlash('succes', 'Supperession réussie');
         return $this->redirectToRoute('events_list');
-
-
     }
-    #[Route('/{id}/update', name: 'update', methods: ['GET','POST'])]
+
+    #[IsGranted('EVENT_EDIT', 'event', 'Vous ne pouvez pas modifier une sortie que vous n\'avez pas créée.')]
+    #[Route('/{id}/update', name: 'update', methods: ['GET', 'POST'])]
     public function update(
-        int $id,
-        EventRepository $eventRepository,
+//        int $id,
+        Event                  $event,
+//        EventRepository $eventRepository,
         EntityManagerInterface $entityManager,
-        Request $request
+        Request                $request
     ): Response
     {
-        $event = $eventRepository->find($id);
+//        $event = $eventRepository->find($id);
 
         $eventform = $this->createForm(EventType::class, $event);
         $eventform->handleRequest($request);
@@ -211,5 +228,4 @@ final class EventController extends AbstractController
         $this->addFlash('success', 'La sortie est publiée');
         return $this->redirectToRoute('events_show', ['id' => $id]);
     }
-
 }
