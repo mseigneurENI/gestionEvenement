@@ -17,40 +17,38 @@
     <div>Latitude : {{ event.place.latitude }}</div>
     <div>
         {% if event.status.description == 'Annulée' %}
-        <div><strong>Motif :</strong>{{ event.cancellationReason }} </div>
-        <div>Statut :{{ event.status.description }} </div>
+            <div><strong>Motif :</strong>{{ event.cancellationReason }} </div>
+            <div>Statut :{{ event.status.description }} </div>
         {% endif %}
     </div>
 
     <h2>Liste des personnes inscrites à la sortie</h2>
 
 
-    {% for user in event.participants %}
 
-        <table>
-            <thead>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Pseudo</th>
+            <th>Nom</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in event.participants %}
             <tr>
-                <th>Pseudo</th>
-                <th>Nom</th>
-
-            </tr>
-            </thead>
-            <tbody>
-            {% for user in event.participants %}
-            <tr>
-                <th>{{ user.username }}</th>
-                <th>{{ user.firstname }} {{ user.lastname }}</th>
-
                 <td>{{ user.username }}</td>
                 <td><a href={{ path('user_show', {'id': user.id}) }}>{{ user.firstname }} {{ user.lastname }}</a></td>
             </tr>
-            {% endfor %}
-            </tbody>
-            <tfoot>
-            <th>Nombre total de participant·e·s</th>
-            <td>{{ event.participants.count }} / {{ event.registrationMaxNb }}</td>
-            </tfoot>
-        </table>
+        {% endfor %}
+        <td>Nombre total de participant·e·s</td>
+        <td>{{ event.participants.count }} / {{ event.registrationMaxNb }}</td>
+        </tbody>
+{#        <tfoot>#}
+
+{#        </tfoot>#}
+    </table>
 
 
     <div>
@@ -63,7 +61,9 @@
                         <button type="submit">Publier la sortie</button>
                     </form>
                     <form action="{{ path('events_delete', {'id': event.id}) }}" method="post">
-                        <button type="submit" onclick="return confirm('Supprimer définitivement cette sortie ?')">Supprimer la sortie</button>
+                        <button type="submit" onclick="return confirm('Supprimer définitivement cette sortie ?')">
+                            Supprimer la sortie
+                        </button>
                     </form>
                 {% else %}
                     <a href="{{ path('events_reasonCancel', {'id': event.id}) }}"
@@ -75,5 +75,5 @@
         {% endif %}
     </div>
 
-
+</div>
     {% endblock %}
