@@ -126,7 +126,8 @@ table{
 }
 
 table th{
-    background-color: rgb(255, 239, 190);
+    /*background-color: rgb(255, 239, 190);*/
+    background-color: #79E8B3;
 }
 
 /*table tr:nth-child(even) {*/
@@ -135,7 +136,7 @@ table th{
 
 table a:hover{
     font-weight: normal;
-    color: #fd50a6;
+    color: deeppink;
 }
 
 @media screen and (max-width: 800px){
