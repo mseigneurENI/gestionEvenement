@@ -6,10 +6,14 @@
 
 {% block body %}
     {% embed 'views/form/template-form.html.twig' with { form : eventForm} %}
-    {% block formTitle %}Création d'une sortie{% endblock %}
+        {% block formTitle %}Création d'une sortie{% endblock %}
         {% block body %}
         {% endblock %}
-    {% block buttonLabel %}Valider{% endblock %}
+
+            {% block buttonLabel %}Valider{% endblock %}
+
     {% endembed %}
-    <button><a href='{{ path('places_create') }}'>Ajouter un lieu</a></button>
+    <div class="container-btn">
+        <button><a href='{{ path('places_create') }}'>Ajouter un lieu</a></button>
+    </div>
 {% endblock %}
