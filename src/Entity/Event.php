@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
@@ -20,12 +21,15 @@ class Event
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Assert\GreaterThan('today', message: 'La date de début doit être plus tard qu\'aujourd\'hui;')]
     private ?\DateTime $beginDateEvent = null;
 
     #[ORM\Column]
+    #[Assert\GreaterThan(propertyPath: 'beginDateEvent', message: 'La date de fin doit être après la date de début.')]
     private ?\DateTime $endDate = null;
 
     #[ORM\Column]
+    #[Assert\LessThan(propertyPath: 'beginDateEvent', message: 'La date limite d\'inscription doit être avant la date de début de l\'événement.')]
     private ?\DateTime $limitDateRegistration = null;
 
     #[ORM\Column]
