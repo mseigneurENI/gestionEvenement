@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Campus;
 use App\Entity\Event;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,6 +18,16 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+    public function findMyEvents(User $user): array
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb
+            ->select('e')
+            ->andWhere('e.organiser = :user')
+            ->setParameter('user', $user);
+
+        return $qb->getQuery()->getResult();
+    }
 
     public function findPublishedEventByDate(): array
     {
@@ -24,6 +35,11 @@ class EventRepository extends ServiceEntityRepository
         $qb
             ->select('e')
             ->andwhere('e.status NOT IN (1, 7)')
+            ->leftJoin('e.status', 'status')
+            ->leftJoin('e.organiser', 'organiser')
+            ->leftJoin('e.participants', 'participants')
+            ->leftJoin('e.campus', 'campus')
+            ->addSelect('status', 'organiser', 'participants', 'campus')
             ->addOrderBy('e.beginDateEvent', 'ASC');
         return $qb->getQuery()->getResult();
     }
@@ -33,7 +49,7 @@ class EventRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('e');
         $qb
             ->select('e')
-            ->andwhere('e.status NOT IN (1, 7)');
+            ->andwhere('e.status NOT IN (1,7)');
         if ($campus) {
             $qb->andWhere('e.campus = :campus')
                 ->setParameter('campus', $campus);
@@ -78,28 +94,28 @@ class EventRepository extends ServiceEntityRepository
     }
 
 
-    //    /**
-    //     * @return Event[] Returns an array of Event objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('e.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        /**
+         * @return Event[] Returns an array of Event objects
+         */
+        public function findByExampleField($value): array
+        {
+            return $this->createQueryBuilder('e')
+                ->andWhere('e.exampleField = :val')
+                ->setParameter('val', $value)
+                ->orderBy('e.id', 'ASC')
+                ->setMaxResults(10)
+                ->getQuery()
+                ->getResult()
+            ;
+        }
 
-    //    public function findOneBySomeField($value): ?Event
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        public function findOneBySomeField($value): ?Event
+        {
+            return $this->createQueryBuilder('e')
+                ->andWhere('e.exampleField = :val')
+                ->setParameter('val', $value)
+                ->getQuery()
+                ->getOneOrNullResult()
+            ;
+        }
 }

@@ -28,11 +28,13 @@ final class EventController extends AbstractController
     }
 
     #[Route('', name: 'list')]
-    public function list(Request $request, EventRepository $eventRepository, CampusRepository $campusRepository): Response
+    public function list(Request $request, EventRepository $eventRepository): Response
     {
         $filtreForm = $this->createForm(FiltreEventType::class);
         $filtreForm->handleRequest($request);
+
         $events = $eventRepository->findPublishedEventByDate();
+
         if ($filtreForm->isSubmitted() && $filtreForm->isValid()) {
             $data = $filtreForm->getData();
             $campus = $data['campus'];
@@ -59,6 +61,17 @@ final class EventController extends AbstractController
 
     }
 
+    #[Route('/myEvents', name: 'my_Events')]
+    public function showMine(
+        EventRepository $eventRepository
+    )
+    {
+        $user = $this->getUser();
+        $myEvents = $eventRepository->findMyEvents($user);
+
+        return $this->render('event/myEvents.html.twig', ['myEvents' => $myEvents]);
+    }
+
     #[Route('/{id}/register', name: 'register', methods: ['POST', 'GET'])]
     public function register(
         int                    $id,
@@ -69,13 +82,14 @@ final class EventController extends AbstractController
         $user = $this->getUser();
 
         $event = $eventRepository->find($id);
+        if ($event->getStatus()->getDescription() !== 'Ouverte') {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas vous inscrire à cette sortie');
+        }
         $event->addParticipant($user);
         $entityManager->flush();
 
         $this->addFlash('register', 'Inscription réussie');
         return $this->redirectToRoute('events_list');
-
-
     }
 
     #[Route('/{id}/unsubscribe', name: 'unsubscribe')]
@@ -130,7 +144,7 @@ final class EventController extends AbstractController
                 $statusEnCreation = $statusRepository->findOneBy(['description' => 'En création']);
             }
             if (!$statusEnCreation) {
-                throw $this->createNotFoundException('Le status « en création » n\existe pas en base de données');
+                throw $this->createNotFoundException('Le status « en création » n\'existe pas en base de données');
             }
 
             $event->setStatus($statusEnCreation);

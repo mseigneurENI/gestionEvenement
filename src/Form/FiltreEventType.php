@@ -48,7 +48,7 @@ class FiltreEventType extends AbstractType
                 'expanded' => true,
                 'multiple' => true
             ])
-            ->add('submit', SubmitType::class, ['label' => 'Rechercher'])
+//            ->add('submit', SubmitType::class, ['label' => 'Rechercher'])
         ;
     }
 

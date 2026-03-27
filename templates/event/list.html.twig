@@ -4,25 +4,50 @@
 
     <div>
         <h2>Filtrer les sorties</h2>
-        {{ form(filtreForm) }}
+        <div class="container-form">
+            {{ form_start(filtreForm) }}
+            {{ form_widget(filtreForm.campus) }}
+            {{ form_widget(filtreForm.search) }}
+            <div class="container-date">
+                {{ form_widget(filtreForm.beginDate) }}
+                {{ form_widget(filtreForm.endDate) }}
+            </div>
+            {{ form_row(filtreForm.checkbox) }}
+{#            <div class="container-checkbox">#}
+{#            {% for choice in checkbox %}#}
+{#                <label for="{{ field_name(filtreForm.choice) }}">{{ field_name(filtreForm.choice) }}</label>#}
+{#                <input type="checkbox"#}
+{#                       id="{{ field_name(filtreForm.choice) }}"#}
+{#                       name="{{ field_name(filtreForm.choice) }}"#}
+{#                       value="{{ field_value(filtreForm.choice) }}"#}
+{#                >#}
+{#{% endfor %}#}
+
+{#            </div>#}
+            <div class="container-btn">
+                <button>RECHERCHER</button>
+            </div>
+            {{ form_end(filtreForm) }}
+        </div>
     </div>
 
-    <table>
-        <thead>
-        <tr>
-            <th>Nom de l'évènement</th>
-            <th>Début de l'évènement</th>
-            <th>Fin de l'événement</th>
-            <th>Date limite d'inscription</th>
-            <th>Inscrits / places</th>
-            <th>Etat</th>
-            <th>Inscrit</th>
-            <th>Organisateur</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for event in events %}
+    <div class="container-table">
+        <table>
+            <thead>
+            <tr>
+                <th>Nom de l'évènement</th>
+                <th>Début de l'évènement</th>
+                <th>Fin de l'événement</th>
+                <th>Date limite d'inscription</th>
+                <th>Inscrits / places</th>
+                <th>Etat</th>
+                <th>Inscrit</th>
+                <th>Organisateur</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for event in events %}
                 <tr>
                     <td>{{ event.name }}</td>
                     <td>{{ event.beginDateEvent|date('d/m/Y H:i') }}</td>
@@ -35,7 +60,9 @@
                     {% else %}
                         <td></td>
                     {% endif %}
-                    <td><a href="{{ path('user_show', {'id': event.organiser.id}) }}">{{ event.organiser.firstname }} {{ event.organiser.lastname }}</a></td>
+                    <td>
+                        <a href="{{ path('user_show', {'id': event.organiser.id}) }}">{{ event.organiser.firstname }} {{ event.organiser.lastname }}</a>
+                    </td>
                     <td>
                         <a href="{{ path('events_show', {'id': event.id}) }}">Afficher</a>
                         {% if app.user %}
@@ -61,12 +88,13 @@
                         {% endif %}
                     </td>
                 </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <div>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="container-btn">
         <a href={{ path('events_create') }}>
-            <button type="submit">Créer une sortie</button>
+            <button>Créer une sortie</button>
         </a>
     </div>
 {% endblock %}

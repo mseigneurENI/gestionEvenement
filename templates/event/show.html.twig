@@ -36,18 +36,22 @@
             </tr>
             </thead>
             <tbody>
+            {% for user in event.participants %}
             <tr>
                 <th>{{ user.username }}</th>
                 <th>{{ user.firstname }} {{ user.lastname }}</th>
 
+                <td>{{ user.username }}</td>
+                <td><a href={{ path('user_show', {'id': user.id}) }}>{{ user.firstname }} {{ user.lastname }}</a></td>
             </tr>
+            {% endfor %}
             </tbody>
             <tfoot>
             <th>Nombre total de participant·e·s</th>
             <td>{{ event.participants.count }} / {{ event.registrationMaxNb }}</td>
             </tfoot>
         </table>
-    {% endfor %}
+
 
     <div>
         {% if event.status.description == 'Annulée' %}
