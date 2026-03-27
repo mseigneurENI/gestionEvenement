@@ -24,6 +24,10 @@ class EventRepository extends ServiceEntityRepository
         $qb
             ->select('e')
             ->andwhere('e.status NOT IN (1, 7)')
+            ->leftJoin('e.status', 'status')
+            ->leftJoin('e.organiser', 'organiser')
+            ->leftJoin('e.participants', 'participants')
+            ->addSelect('status', 'organiser', 'participants')
             ->addOrderBy('e.beginDateEvent', 'ASC');
         return $qb->getQuery()->getResult();
     }
@@ -78,28 +82,28 @@ class EventRepository extends ServiceEntityRepository
     }
 
 
-    //    /**
-    //     * @return Event[] Returns an array of Event objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('e.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        /**
+         * @return Event[] Returns an array of Event objects
+         */
+        public function findByExampleField($value): array
+        {
+            return $this->createQueryBuilder('e')
+                ->andWhere('e.exampleField = :val')
+                ->setParameter('val', $value)
+                ->orderBy('e.id', 'ASC')
+                ->setMaxResults(10)
+                ->getQuery()
+                ->getResult()
+            ;
+        }
 
-    //    public function findOneBySomeField($value): ?Event
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        public function findOneBySomeField($value): ?Event
+        {
+            return $this->createQueryBuilder('e')
+                ->andWhere('e.exampleField = :val')
+                ->setParameter('val', $value)
+                ->getQuery()
+                ->getOneOrNullResult()
+            ;
+        }
 }
