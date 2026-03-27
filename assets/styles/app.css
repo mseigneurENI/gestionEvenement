@@ -5,3 +5,13 @@ main{
     min-height: 90vh;
 }
 
+img {
+    max-width: 300px;
+}
+
+@media screen and (max-width: 800px){
+    .noSmartphone{
+display: none;
+    }
+}
+
