@@ -1,3 +1,4 @@
+<a href="{{ path('events_list') }}"><img class="logo" src="{{ asset('images/image-profil-defaut.png') }}" alt="logo"></a>
 <nav>
     <ul>
         {% if is_granted('ROLE_ADMIN') %}
@@ -11,7 +12,7 @@
 
             <li><a href="{{ path('events_my_Events') }}">Les sorties que j'organise</a></li>
 
-            <li><a href="{{ path('user_update') }}">🙂 {{ app.user.username }} (profil)</a></li>
+            <li><a href="{{ path('user_update') }}">🦝 {{ app.user.username }} (profil)</a></li>
             <li><a href="{{ path('app_logout') }}">Logout</a></li>
         {% else %}
             <li><a href="{{ path('app_login') }}">Login</a></li>

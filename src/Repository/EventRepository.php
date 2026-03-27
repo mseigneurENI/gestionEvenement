@@ -49,7 +49,7 @@ class EventRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('e');
         $qb
             ->select('e')
-            ->andwhere('e.status NOT IN (7)');
+            ->andwhere('e.status NOT IN (1,7)');
         if ($campus) {
             $qb->andWhere('e.campus = :campus')
                 ->setParameter('campus', $campus);

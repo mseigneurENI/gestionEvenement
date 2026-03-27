@@ -5,13 +5,18 @@
 {% endblock %}
 
 {% block body %}
+    <div class="main-body">
+        <img src="{{ asset('images/joyfull_panda_and_red_panda.jpg') }}" alt="bienvenue">
     {% if not app.user %}
+
     <h2>Pour continuer sur le site, veuillez vous connecter :</h2>
-    <button><a href="{{ path('app_login') }}">Se connecter</a></button>
+    <button class="btn"><a href="{{ path('app_login') }}">Se connecter</a></button>
     {% else %}
-    <h2>Bienvenue, consultez la liste des évènements disponibles :</h2>
-    <button><a href="{{ path('events_list') }}">Evènements</a></button>
+        <h1>Bienvenue !</h1>
+    <h2>Consultez la liste des évènements disponibles :</h2>
+    <button class="btn"><a href="{{ path('events_list') }}">EVENEMENTS</a></button>
 {% endif %}
+    </div>
 {% endblock %}
 
 

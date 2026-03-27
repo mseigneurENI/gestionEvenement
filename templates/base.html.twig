@@ -1,40 +1,44 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Sortir.com{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.min.css">
-      {% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Sortir.com{% endblock %}</title>
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    {% block stylesheets %}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.min.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Coiny&display=swap" rel="stylesheet">
+    {% endblock %}
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-            <script src="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/postcss.config.min.js"></script>
-        {% endblock %}
-    </head>
-    <body>
-    <div class="container">
-        <header>
-{#            <a href="{{ path('main_home') }}">#}
-{#                <img src="{{ asset('images/logo.svg') }}">#}
-{#            </a>#}
-            {% include'views/nav/nav.html.twig' %}
-        </header>
-        <main>
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="flash flash-{{ label }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+        <script src="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/postcss.config.min.js"></script>
+    {% endblock %}
+</head>
+<body>
+<div class="container">
+    <header>
+        {#            <a href="{{ path('main_home') }}"> #}
+        {#                <img src="{{ asset('images/logo.svg') }}"> #}
+        {#            </a> #}
+        {% include'views/nav/nav.html.twig' %}
+    </header>
+    <main>
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash flash-{{ label }}">
+                    {{ message }}
+                </div>
             {% endfor %}
-            {% block image %}{% endblock %}
-            {% block body %}{% endblock %}
-        </main>
-<footer>
-    {% include 'views/nav/footer.html.twig' %}
-</footer>
-    </div>
-    </body>
+        {% endfor %}
+        {% block image %}{% endblock %}
+        {% block body %}{% endblock %}
+    </main>
+    <footer>
+        {% include 'views/nav/footer.html.twig' %}
+    </footer>
+</div>
+</body>
 </html>
