@@ -41,6 +41,12 @@ final class EventController extends AbstractController
 
         $events = $eventRepository->findPublishedEventByDate();
 
+        //injection de function archiveService
+        $this->archiveService->archiveEvent();
+
+//        if($events->getStatus())
+
+
         if ($filtreForm->isSubmitted() && $filtreForm->isValid()) {
             $data = $filtreForm->getData();
             $campus = $data['campus'];
@@ -80,7 +86,7 @@ final class EventController extends AbstractController
         return $this->render('event/myEvents.html.twig', ['myEvents' => $myEvents]);
     }
 
-    #[IsGranted("EVENT_REGISTER", 'event', "Vous ne pouvez pas vous inscrire à cette sortie")]
+//    #[IsGranted("EVENT_REGISTER", 'event', "Vous ne pouvez pas vous inscrire à cette sortie")]
     #[Route('/{id}/register', name: 'register', methods: ['POST', 'GET'])]
     public function register(
         int                    $id,
@@ -91,6 +97,13 @@ final class EventController extends AbstractController
         $user = $this->getUser();
 
         $event = $eventRepository->find($id);
+
+        if ($event->getParticipants()->count() >= $event->getRegistrationMaxNb()) {
+            $this->addFlash('error', 'Il n\'y a plus de place:(');
+
+            return $this->redirectToRoute('events_show', ['id' => $event->getId()]);
+        }
+
         if ($event->getStatus()->getDescription() !== 'Ouverte') {
             throw $this->createAccessDeniedException('Vous ne pouvez pas vous inscrire à cette sortie');
         }
