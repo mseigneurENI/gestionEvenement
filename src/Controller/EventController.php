@@ -10,6 +10,7 @@ use App\Form\FiltreEventType;
 use App\Repository\CampusRepository;
 use App\Repository\EventRepository;
 use App\Repository\StatusRepository;
+use App\Service\ArchiveService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,21 +20,36 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('events', name: 'events_')]
 final class EventController extends AbstractController
+// les dependence
 {
     private StatusRepository $statusRepository;
-
-    public function __construct(StatusRepository $statusRepository)
+    private ArchiveService $archiveService;
+// injection de dependence
+    public function __construct(StatusRepository $statusRepository, ArchiveService $archiveService)
     {
         $this->statusRepository = $statusRepository;
+        $this->archiveService = $archiveService;
     }
 
     #[Route('', name: 'list')]
-    public function list(Request $request, EventRepository $eventRepository): Response
+    public function list(Request $request, EventRepository $eventRepository, ArchiveService $archiveService ): Response
     {
         $filtreForm = $this->createForm(FiltreEventType::class);
         $filtreForm->handleRequest($request);
 
         $events = $eventRepository->findPublishedEventByDate();
+//
+//        if ($events->getParticipants()->count() >= $events->getRegistrationMaxNb()) {
+//            $this->addFlash('error', 'Il n\'y a plus de place:(');
+//
+//            return $this->redirectToRoute('events_show', ['id' => $events->getId()]);
+//        }
+        //injection de function archiveService
+
+        $this->archiveService->archiveEvent();
+
+//        if($events->getStatus())
+
 
         if ($filtreForm->isSubmitted() && $filtreForm->isValid()) {
             $data = $filtreForm->getData();
