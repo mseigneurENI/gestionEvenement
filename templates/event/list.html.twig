@@ -1,40 +1,41 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    <h1>All events</h1>
+<h1>All events</h1>
 
-    <div>
-        <h2>Filtrer les sorties</h2>
-        <div class="container-form">
-            <div>
-                {{ form_start(filtreForm) }}
-                <div class="container-label-item">
+
+    <h2>Filtrer les sorties</h2>
+    <div class="container-form">
+        <div>
+            {{ form_start(filtreForm) }}
+            <div class="container-label-item">
                 {{ form_label(filtreForm.campus) }}
                 {{ form_widget(filtreForm.campus) }}
-                </div>
-                <div class="container-label-item">
+            </div>
+            <div class="container-label-item">
                 {{ form_label(filtreForm.search) }}
                 {{ form_widget(filtreForm.search) }}
-                </div>
-                <div class="container-date">
-                    {{ form_label(filtreForm.beginDate) }}
-                    {{ form_widget(filtreForm.beginDate) }}
-                    {{ form_label(filtreForm.endDate) }}
-                    {{ form_widget(filtreForm.endDate) }}
-                </div>
             </div>
-            <div>
-                <div class="container-checkbox">
-                    {% for checkbox in filtreForm.checkbox %}
-                        <div class="container-label-item">
-                            {{ form_widget(checkbox) }}
-                            {{ form_label(checkbox) }}
-                        </div>
-                    {% endfor %}
-                </div>
+            <div class="container-date">
+                {{ form_label(filtreForm.beginDate) }}
+                {{ form_widget(filtreForm.beginDate) }}
+                {{ form_label(filtreForm.endDate) }}
+                {{ form_widget(filtreForm.endDate) }}
+            </div>
+        </div>
+        <div>
+            <div class="container-checkbox">
+                {% for checkbox in filtreForm.checkbox %}
+                    <div class="container-label-item">
+                        {{ form_widget(checkbox) }}
+                        {{ form_label(checkbox) }}
+                    </div>
+                {% endfor %}
+            </div>
 
-                <div class="container-btn">
-                    <button>RECHERCHER</button>
-                </div>
+            <div class="container-btn">
+                <button>RECHERCHER</button>
+                {#                    {{ form_widget(filtreForm.submit) }} #}
+
             </div>
             {{ form_end(filtreForm) }}
         </div>
@@ -106,4 +107,4 @@
             <button>Créer une sortie</button>
         </a>
     </div>
-{% endblock %}
+    {% endblock %}

@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}
+{{ parent() }} - Connexion
+{% endblock %}
 
 {% block body %}
     <form method="post">
@@ -14,26 +16,28 @@
             </div>
         {% endif %}
 
-        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+        <h1 class="h3 mb-3 font-weight-normal">Merci de rentrer vos identifiants</h1>
         <label for="inputUsername">Pseudo ou email</label>
         <input type="text" value="{{ last_username }}" name="identifier" id="inputUsername" class="form-control"
                autocomplete="username" required autofocus>
-        <label for="inputPassword">Password</label>
+        <label for="inputPassword">Mot de passe</label>
         <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password"
                required>
         <input type="hidden" name="_csrf_token" data-controller="csrf-protection"
                value="{{ csrf_token('authenticate') }}">
 
         <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" name="_remember_me"> Remember me
-            </label>
+            <div class="container-label-item">
+                <input id="remember_me" type="checkbox" name="_remember_me">
+                <label for="remember_me">Se souvenir de moi</label>
+            </div>
         </div>
-<div class="container-btn">
-        <button>
-            Sign in
-        </button>
-</div>
+        <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ?</a>
+        <div class="container-btn">
+            <button>
+                Se connecter
+            </button>
+        </div>
         <div class="container-illustration">
             <img src="{{ asset('images/green-computer-red-panda.png') }}" alt="red panda with computer">
         </div>
