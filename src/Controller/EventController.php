@@ -34,6 +34,10 @@ final class EventController extends AbstractController
     #[Route('', name: 'list')]
     public function list(Request $request, EventRepository $eventRepository): Response
     {
+
+        //injection de function archiveService
+        $this->archiveService->archiveEvent();
+
         $filtreForm = $this->createForm(FiltreEventType::class);
         $filtreForm->handleRequest($request);
         $user = $this->getUser();
@@ -41,8 +45,6 @@ final class EventController extends AbstractController
 
         $events = $eventRepository->findPublishedEventByDate();
 
-        //injection de function archiveService
-        $this->archiveService->archiveEvent();
 
 //        if($events->getStatus())
 
@@ -123,19 +125,30 @@ final class EventController extends AbstractController
     public function unsubscribe(
         int                    $id,
         EventRepository        $eventRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        StatusRepository     $statusRepository
     ): Response
     {
         $user = $this->getUser();
         $event = $eventRepository->find($id);
 
+
         $event->removeParticipant($user);
 
-        $entityManager->flush();
-        $this->addFlash('cancel', 'Annulation réussie');
-        return $this->redirectToRoute('events_list');
-    }
+        $now = new \DateTime();
+        // date inscription pas dépassé
+        $red = $event->getLimitDateRegistration() > $now;
+        if ($red) {
+            $openStatus = $statusRepository->findOneBy(['description' => 'Ouverte']);
+            if ($openStatus) {
+                $event->setStatus($openStatus);
+            }
+        }
 
+            $entityManager->flush();
+            $this->addFlash('cancel', 'Annulation réussie');
+            return $this->redirectToRoute('events_list');
+        }
 
     #[Route('/create', name: 'create', methods: ['POST', 'GET'])]
     public function create(
