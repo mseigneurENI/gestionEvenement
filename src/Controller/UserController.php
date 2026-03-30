@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\ProfileType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,11 +30,13 @@ final class UserController extends AbstractController
                            EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = $this->getUser();
+
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
         $userForm = $this->createForm(ProfileType::class, $user);
         $userForm->handleRequest($request);
+
         if ($userForm->isSubmitted() && $userForm->isValid()) {
 
             /**
@@ -72,6 +75,43 @@ final class UserController extends AbstractController
             throw $this->createNotFoundException();
         }
         return $this->render('user/show.html.twig', ['user' => $user]);
+    }
+
+    #[Route('/create', name: 'create', methods: ['POST', 'GET'])]
+public function create(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response{
+        $user = new User();
+        $user->setRoles(['ROLE_USER']);
+        //mot de passe par défaut s'il n'est pas rempli par l'admin
+        $user->setPassword($passwordHasher->hashPassword($user, '123456'));
+        $user->setActive(true);
+        $userForm = $this->createForm(ProfileType::class, $user);
+        $userForm->handleRequest($request);
+        if ($userForm->isSubmitted() && $userForm->isValid()) {
+
+            /**
+             * @var UploadedFile $file
+             */
+            $file = $userForm->get('image')->getData();
+            if($file){
+                $newFileName = $user->getUsername() .'-'.uniqid(). '.' . $file->guessExtension();
+                $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/assets/images/profileImages';
+                $file->move($uploadsDir, $newFileName);
+                $user->setImage($newFileName);
+            }
+
+
+            $plainPassword = $userForm->get('password')->getData();
+            if ($plainPassword){
+                $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+                $user->setPassword($hashedPassword);
+            }
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $this->addFlash('success', 'Nouvel utilisateur créé');
+            return $this->redirectToRoute('user_show', ['id' => $user->getId()]);
+        }
+        return $this->render('user/create.html.twig', ['userForm' => $userForm]);
     }
 
 }

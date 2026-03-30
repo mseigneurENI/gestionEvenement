@@ -45,7 +45,7 @@ class ProfileType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'Choisir un campus',
                 'query_builder' => function (CampusRepository $campusRepository) {
-                return $campusRepository->createQueryBuilder('c')->addOrderBy('c.name', 'ASC');
+                    return $campusRepository->createQueryBuilder('c')->addOrderBy('c.name', 'ASC');
                 }
             ])
 //            ->add('events', EntityType::class, [

@@ -34,7 +34,7 @@ footer p{
     text-align: center;
 }
 
-.display-row{
+.display-row, .rowToColumnSmartphone{
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
@@ -48,6 +48,14 @@ footer p{
 
 nav{
     justify-content: center;
+}
+
+.flash-success{
+    background-color: #79E8B3;
+    padding: 10px;
+    border-radius: 30px;
+    margin: 10px;
+    width: fit-content;
 }
 
 h1{
@@ -153,6 +161,23 @@ input[type="checkbox"]{
     flex-direction: column;
 }
 
+table{
+    box-shadow: 5px 5px 15px rgba(85, 85, 85, 100);
+    border-radius: 15px;
+    font-size: 1rem;
+}
+
+table th{
+    /*background-color: rgb(255, 239, 190);*/
+    background-color: #79E8B3;
+}
+
+
+table a:hover{
+    font-weight: normal;
+    color: deeppink;
+}
+
 table th:first-child {
     border-top-left-radius: 15px;
 }
@@ -166,28 +191,13 @@ table tr:last-child td:last-child {
     border-bottom-right-radius: 15px;
 }
 
-table{
-    box-shadow: 5px 5px 15px rgba(85, 85, 85, 100);
-    border-radius: 15px;
-}
-
-table th{
-    /*background-color: rgb(255, 239, 190);*/
-    background-color: #79E8B3;
-}
-
-/*table tr:nth-child(even) {*/
-/*    background-color: #95aabf;*/
-/*}*/
-
-table a:hover{
-    font-weight: normal;
-    color: deeppink;
-}
-
-@media screen and (max-width: 800px){
+@media screen and (max-width: 768px){
     .noSmartphone{
 display: none;
+    }
+
+    .rowToColumnSmartphone{
+        flex-direction: column;
     }
 }
 

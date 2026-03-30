@@ -9,6 +9,7 @@
         {% if is_granted('ROLE_ADMIN') %}
             <li><a>Villes</a></li>
             <li><a>Campus</a></li>
+            <li><a href="{{ path('user_create') }}">Créer un utilisateur</a></li>
         {% endif %}
         {% if app.user %}
             <li><a href="{{ path('main_home') }}">Home</a></li>

@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+{{ parent() }} - Nouvel utilisateur
+{% endblock %}
+
+
+{% block body %}
+{{ form_start(userForm) }}
+    {{ form_widget(userForm) }}
+    <div class="container-btn">
+    <button>Valider</button>
+    </div>
+    {{ form_end(userForm) }}
+
+{% endblock %}
+
+

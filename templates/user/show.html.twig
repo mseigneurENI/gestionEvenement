@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    <div class="display-row">
+    <div class="rowToColumnSmartphone">
         <div>
             {% if  user.image %}
-                <div><img src="{{ asset('assets/images/profileImages/' ~ user.image) }}" alt="{{ user.username }}">
-                </div>
+                <img src="{{ asset('assets/images/profileImages/' ~ user.image) }}" alt="{{ user.username }}">
+
             {% else %}
-                <div><img src="{{ asset('images/jumping-joyful-red-panda.png') }}" alt="{{ user.username }}"></div>
+                <img src="{{ asset('images/jumping-joyful-red-panda.png') }}" alt="{{ user.username }}">
             {% endif %}
         </div>
         <div>
