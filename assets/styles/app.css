@@ -18,6 +18,12 @@ main{
     min-height: 90vh;
 }
 
+.main-body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 footer{
     display: flex;
     flex-direction: column;
@@ -111,11 +117,7 @@ button:hover{
     background-color: #04b8b8;
 }
 
-.main-body{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+
 
 .container-form{
     display: flex;
