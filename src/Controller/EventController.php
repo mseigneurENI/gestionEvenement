@@ -37,15 +37,19 @@ final class EventController extends AbstractController
         $filtreForm = $this->createForm(FiltreEventType::class);
         $filtreForm->handleRequest($request);
 
+        $user = $this->getUser();
+        $userId = $user->getId();
+
         $events = $eventRepository->findPublishedEventByDate();
-//
+
 //        if ($events->getParticipants()->count() >= $events->getRegistrationMaxNb()) {
 //            $this->addFlash('error', 'Il n\'y a plus de place:(');
 //
 //            return $this->redirectToRoute('events_show', ['id' => $events->getId()]);
 //        }
-        //injection de function archiveService
+//
 
+        //injection de function archiveService
         $this->archiveService->archiveEvent();
 
 //        if($events->getStatus())
@@ -59,7 +63,7 @@ final class EventController extends AbstractController
             $endDate = $data['endDate'];
             $checkboxes = $data['checkbox'];
 
-            $events = $eventRepository->findFilteredEvents($campus, $search, $beginDate, $endDate, $checkboxes);
+            $events = $eventRepository->findFilteredEvents($campus, $search, $beginDate, $endDate, $checkboxes, $user,$userId);
         }
         return $this->render('event/list.html.twig', ['events' => $events, 'filtreForm' => $filtreForm]);
     }
@@ -88,7 +92,7 @@ final class EventController extends AbstractController
         return $this->render('event/myEvents.html.twig', ['myEvents' => $myEvents]);
     }
 
-    #[IsGranted("EVENT_REGISTER", 'event', "Vous ne pouvez pas vous inscrire à cette sortie")]
+//    #[IsGranted("EVENT_REGISTER", 'event', "Vous ne pouvez pas vous inscrire à cette sortie")]
     #[Route('/{id}/register', name: 'register', methods: ['POST', 'GET'])]
     public function register(
         int                    $id,
