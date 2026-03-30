@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% set previousUrl = app.request.headers.get('referer') %}
+
+{% block title %}
+    {{ parent() }} - accès refusé
+{% endblock %}
+
+{% block body %}
+    <h2>Accès refusé</h2>
+    <img src="{{ asset('images/wondering-red-panda.png') }}" alt="questioning red panda">
+    <p>Hum, hum... il semble que vous n'ayez pas le droit d'être ici.</p>
+    <p>Il vaut mieux faire demi-tour ou retourner sur la page d'accueil :</p>
+    <div>
+        {% if previousUrl %}
+            <a href="{{ previousUrl }}"><button>page précédente</button></a>
+        {% endif %}
+        <a href="{{ path('main_home') }}"><button>accueil</button></a>
+    </div>
+{% endblock %}

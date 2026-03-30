@@ -7,10 +7,14 @@
         <div class="container-form">
             <div>
                 {{ form_start(filtreForm) }}
+                <div class="container-label-item">
                 {{ form_label(filtreForm.campus) }}
                 {{ form_widget(filtreForm.campus) }}
+                </div>
+                <div class="container-label-item">
                 {{ form_label(filtreForm.search) }}
                 {{ form_widget(filtreForm.search) }}
+                </div>
                 <div class="container-date">
                     {{ form_label(filtreForm.beginDate) }}
                     {{ form_widget(filtreForm.beginDate) }}
@@ -21,7 +25,7 @@
             <div>
                 <div class="container-checkbox">
                     {% for checkbox in filtreForm.checkbox %}
-                        <div class="checkbox-item">
+                        <div class="container-label-item">
                             {{ form_widget(checkbox) }}
                             {{ form_label(checkbox) }}
                         </div>
