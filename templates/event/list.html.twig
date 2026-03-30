@@ -7,7 +7,9 @@
         <div class="container-form">
             <div>
                 {{ form_start(filtreForm) }}
+                {{ form_label(filtreForm.campus) }}
                 {{ form_widget(filtreForm.campus) }}
+                {{ form_label(filtreForm.search) }}
                 {{ form_widget(filtreForm.search) }}
                 <div class="container-date">
                     {{ form_label(filtreForm.beginDate) }}
