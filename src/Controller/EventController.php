@@ -42,13 +42,6 @@ final class EventController extends AbstractController
 
         $events = $eventRepository->findPublishedEventByDate();
 
-//        if ($events->getParticipants()->count() >= $events->getRegistrationMaxNb()) {
-//            $this->addFlash('error', 'Il n\'y a plus de place:(');
-//
-//            return $this->redirectToRoute('events_show', ['id' => $events->getId()]);
-//        }
-//
-
         //injection de function archiveService
         $this->archiveService->archiveEvent();
 
@@ -103,6 +96,13 @@ final class EventController extends AbstractController
         $user = $this->getUser();
 
         $event = $eventRepository->find($id);
+
+        if ($event->getParticipants()->count() >= $event->getRegistrationMaxNb()) {
+            $this->addFlash('error', 'Il n\'y a plus de place:(');
+
+            return $this->redirectToRoute('events_show', ['id' => $event->getId()]);
+        }
+
         if ($event->getStatus()->getDescription() !== 'Ouverte') {
             throw $this->createAccessDeniedException('Vous ne pouvez pas vous inscrire à cette sortie');
         }
