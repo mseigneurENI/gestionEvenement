@@ -204,7 +204,7 @@ final class EventController extends AbstractController
 
         $entityManager->remove($event);
         $entityManager->flush();
-        $this->addFlash('succes', 'Supperession réussie');
+        $this->addFlash('succes', 'Suppression réussie');
         return $this->redirectToRoute('events_list');
     }
 

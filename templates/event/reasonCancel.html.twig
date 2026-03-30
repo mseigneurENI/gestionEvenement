@@ -4,6 +4,8 @@
     <h1>Annuler la sortie : {{ event.name }}</h1>
     {{ form_start(form) }}
         {{ form_widget(form) }}
-        <button type="submit">Confirmer l'annulation</button>
+    <div class="container-btn">
+        <button>Confirmer l'annulation</button>
+    </div>
     {{ form_end(form) }}
 {% endblock %}
