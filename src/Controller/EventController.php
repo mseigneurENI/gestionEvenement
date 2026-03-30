@@ -32,13 +32,12 @@ final class EventController extends AbstractController
     }
 
     #[Route('', name: 'list')]
-    public function list(Request $request, EventRepository $eventRepository, ArchiveService $archiveService ): Response
+    public function list(Request $request, EventRepository $eventRepository): Response
     {
         $filtreForm = $this->createForm(FiltreEventType::class);
         $filtreForm->handleRequest($request);
-
         $user = $this->getUser();
-        $userId = $user->getId();
+        $id = $user->getId();
 
         $events = $eventRepository->findPublishedEventByDate();
 
@@ -56,10 +55,12 @@ final class EventController extends AbstractController
             $endDate = $data['endDate'];
             $checkboxes = $data['checkbox'];
 
-            $events = $eventRepository->findFilteredEvents($campus, $search, $beginDate, $endDate, $checkboxes, $user,$userId);
+
+            $events = $eventRepository->findFilteredEvents($campus, $search, $beginDate, $endDate, $checkboxes, $user, $id);
         }
         return $this->render('event/list.html.twig', ['events' => $events, 'filtreForm' => $filtreForm]);
     }
+
 
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'])]
     public function show(int $id, EventRepository $eventRepository): Response

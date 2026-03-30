@@ -34,12 +34,13 @@ class EventRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('e');
         $qb
             ->select('e')
-            ->andwhere('e.status NOT IN (1, 7)')
             ->leftJoin('e.status', 'status')
             ->leftJoin('e.organiser', 'organiser')
             ->leftJoin('e.participants', 'participants')
             ->leftJoin('e.campus', 'campus')
             ->addSelect('status', 'organiser', 'participants', 'campus')
+            ->andwhere('status.description NOT IN (:forbiddenStatus)')
+            ->setParameter('forbiddenStatus', ["En création", "Historisée"])
             ->addOrderBy('e.beginDateEvent', 'ASC');
         return $qb->getQuery()->getResult();
     }
@@ -49,7 +50,13 @@ class EventRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('e');
         $qb
             ->select('e')
-            ->andwhere('e.status NOT IN (1,7)');
+            ->leftJoin('e.status', 'status')
+            ->leftJoin('e.organiser', 'organiser')
+            ->leftJoin('e.participants', 'participants')
+            ->leftJoin('e.campus', 'campus')
+            ->addSelect('status', 'organiser', 'participants', 'campus')
+            ->andwhere('status.description NOT IN (:forbiddenStatus)')
+            ->setParameter('forbiddenStatus', ["En création", "Historisée"]);
         if ($campus) {
             $qb->andWhere('e.campus = :campus')
                 ->setParameter('campus', $campus);
@@ -85,7 +92,8 @@ class EventRepository extends ServiceEntityRepository
             }
 
             if (in_array('terminee', $checkboxes)) {
-                $qb->andWhere('e.status in (5)');
+                $qb->andWhere('e.status in (:statutTerminee)')
+                ->setParameter('statutTerminee', "Terminée");
             }
         }
 
