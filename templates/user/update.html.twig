@@ -1,22 +1,31 @@
 {% extends 'base.html.twig' %}
-{% block image %}
-{% if app.user.image %}
-    <img src="{{ asset('assets/images/profileImages/' ~ app.user.image) }}" alt="{{ app.user.username }}">
-    {% else %}
-        <img src="{{ asset('images/jumping-joyful-red-panda.png') }}" alt="profil">
-{% endif %}
-{% endblock %}
 
 {% block title %}
     {{ parent() }} - Mise à jour du profil
 {% endblock %}
 
-{% block body %}
-{{ form_start(ProfileType) }}
-    {{ form_widget(ProfileType) }}
-    <button>Modifier</button>
-    {{ form_end(ProfileType) }}
-{% endblock %}
+        {% block image %}
+        {% endblock %}
 
+        {% block body %}
+            <div class="display-row">
+                <div>
+                    {% if app.user.image %}
+                        <img src="{{ asset('assets/images/profileImages/' ~ app.user.image) }}"
+                             alt="{{ app.user.username }}">
+                    {% else %}
+                        <img src="{{ asset('images/jumping-joyful-red-panda.png') }}" alt="profil">
+                    {% endif %}
+                </div>
+                <div>
+                    {{ form_start(ProfileType) }}
+                    {{ form_widget(ProfileType) }}
+                    <div class="container-btn">
+                        <button>Modifier</button>
+                    </div>
+                    {{ form_end(ProfileType) }}
+                </div>
+            </div>
+        {% endblock %}
 
 

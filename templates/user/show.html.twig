@@ -1,15 +1,21 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-
-    {% if  user.image %}
-    <div><img src="{{ asset('assets/images/profileImages/' ~ user.image) }}" alt="{{ user.username }}"></div>
-    {% else %}
-    <div><img src="{{ asset('images/jumping-joyful-red-panda.png') }}" alt="{{ user.username }}"></div>
-    {% endif %}
-    <h2>{{ user.username }}</h2>
-    <div>Prénom : {{ user.firstname }}</div>
-    <div>Nom : {{ user.lastname }}</div>
-    <div>Numéro de téléphone : {{ user.phoneNb }}</div>
-    <div>Adresse mail : {{ user.email }}</div>
-    <div>Campus : {{ user.campus.name }}</div>
+    <div class="display-row">
+        <div>
+            {% if  user.image %}
+                <div><img src="{{ asset('assets/images/profileImages/' ~ user.image) }}" alt="{{ user.username }}">
+                </div>
+            {% else %}
+                <div><img src="{{ asset('images/jumping-joyful-red-panda.png') }}" alt="{{ user.username }}"></div>
+            {% endif %}
+        </div>
+        <div>
+            <h2>{{ user.username }}</h2>
+            <div>Prénom : {{ user.firstname }}</div>
+            <div>Nom : {{ user.lastname }}</div>
+            <div>Numéro de téléphone : {{ user.phoneNb }}</div>
+            <div>Adresse mail : {{ user.email }}</div>
+            <div>Campus : {{ user.campus.name }}</div>
+        </div>
+    </div>
 {% endblock %}
