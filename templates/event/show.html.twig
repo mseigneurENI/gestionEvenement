@@ -3,77 +3,77 @@
 {% block title %}Détails de la sortie{% endblock %}
 
 {% block body %}
-<h2>Détails de la sortie</h2>
-<div>Nom de la sortie : {{ event.name }}</div>
-<div>Date et heure de la sortie : {{ event.beginDateEvent | date('d/m/Y H:m') }}</div>
-<div>Date et heure de fin de la sortie : {{ event.endDate | date('d/m/Y H:m') }}</div>
-<div>Date limite d'inscription à la sortie : {{ event.limitDateRegistration | date('d/m/Y H:m') }}</div>
-<div>Nombre de places : {{ event.registrationMaxNb }}</div>
-<div>Campus : {{ event.campus.name }}
-    <div>Lieu : {{ event.place.name }}</div>
-    <div>Rue : {{ event.place.street }}</div>
-    <div>Code postal : {{ event.place.city.zipcode }}</div>
-    <div>Longitude : {{ event.place.longitude }}</div>
-    <div>Latitude : {{ event.place.latitude }}</div>
-    <div>
-        {% if event.status.description == 'Annulée' %}
-            <div><strong>Motif :</strong>{{ event.cancellationReason }} </div>
-            <div>Statut :{{ event.status.description }} </div>
-        {% endif %}
-    </div>
+    <h2>Détails de la sortie</h2>
+    <div>Nom de la sortie : {{ event.name }}</div>
+    <div>Date et heure de la sortie : {{ event.beginDateEvent | date('d/m/Y H:m') }}</div>
+    <div>Date et heure de fin de la sortie : {{ event.endDate | date('d/m/Y H:m') }}</div>
+    <div>Date limite d'inscription à la sortie : {{ event.limitDateRegistration | date('d/m/Y H:m') }}</div>
+    <div>Nombre de places : {{ event.registrationMaxNb }}</div>
+    <div>Campus : {{ event.campus.name }}
+        <div>Lieu : {{ event.place.name }}</div>
+        <div>Rue : {{ event.place.street }}</div>
+        <div>Code postal : {{ event.place.city.zipcode }}</div>
+        <div>Longitude : {{ event.place.longitude }}</div>
+        <div>Latitude : {{ event.place.latitude }}</div>
+        <div>
+            {% if event.status.description == 'Annulée' %}
+                <div><strong>Motif :</strong>{{ event.cancellationReason }} </div>
+                <div>Statut :{{ event.status.description }} </div>
+            {% endif %}
+        </div>
 
-    <h2>Liste des personnes inscrites à la sortie</h2>
+        <h2>Liste des personnes inscrites à la sortie</h2>
 
-
-
-
-    <table>
-        <thead>
-        <tr>
-            <th>Pseudo</th>
-            <th>Nom</th>
-
-        </tr>
-        </thead>
-        <tbody>
-        {% for user in event.participants %}
+<div>
+        <table>
+            <thead>
             <tr>
-                <td>{{ user.username }}</td>
-                <td><a href={{ path('user_show', {'id': user.id}) }}>{{ user.firstname }} {{ user.lastname }}</a></td>
+                <th>Pseudo</th>
+                <th>Nom</th>
+
             </tr>
-        {% endfor %}
-        <td>Nombre total de participant·e·s</td>
-        <td>{{ event.participants.count }} / {{ event.registrationMaxNb }}</td>
-        </tbody>
-{#        <tfoot>#}
+            </thead>
+            <tbody>
+            {% for user in event.participants %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td><a href={{ path('user_show', {'id': user.id}) }}>{{ user.firstname }} {{ user.lastname }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            <td>Nombre total de participant·e·s</td>
+            <td>{{ event.participants.count }} / {{ event.registrationMaxNb }}</td>
+            </tbody>
+            {#        <tfoot> #}
 
-{#        </tfoot>#}
-    </table>
+            {#        </tfoot> #}
+        </table>
+    <img src="{{ asset('images/metal-panda.png') }}" alt="happy panda">
+</div>
 
-
-    <div>
-        {% if event.status.description == 'Annulée' %}
-            <p style="color: red; font-weight: bold;">Cette sortie est annulée :(</p>
-        {% else %}
-            {% if app.user and (app.user == event.organiser or is_granted('ROLE_ADMIN')) %}
-                {% if event.status.description == 'En création' %}
-                    <form action="{{ path('events_publish', {'id': event.id}) }}" method="post">
-                        <button type="submit">Publier la sortie</button>
-                    </form>
-                    <form action="{{ path('events_delete', {'id': event.id}) }}" method="post">
-                        <button type="submit" onclick="return confirm('Supprimer définitivement cette sortie ?')">
-                            Supprimer la sortie
-                        </button>
-                    </form>
-                {% else %}
-                    <a href="{{ path('events_reasonCancel', {'id': event.id}) }}"
-                       onclick="return confirm('Etes vous sûr de vouloir supprimer cette sortie ? Un motif sera demandé.')">
-                        Annuler la sortie
-                    </a>
+        <div>
+            {% if event.status.description == 'Annulée' %}
+                <p style="color: red; font-weight: bold;">Cette sortie est annulée :(</p>
+            {% else %}
+                {% if app.user and (app.user == event.organiser or is_granted('ROLE_ADMIN')) %}
+                    {% if event.status.description == 'En création' %}
+                        <form action="{{ path('events_publish', {'id': event.id}) }}" method="post">
+                            <button type="submit">Publier la sortie</button>
+                        </form>
+                        <form action="{{ path('events_delete', {'id': event.id}) }}" method="post">
+                            <button type="submit" onclick="return confirm('Supprimer définitivement cette sortie ?')">
+                                Supprimer la sortie
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="{{ path('events_reasonCancel', {'id': event.id}) }}"
+                           onclick="return confirm('Etes vous sûr de vouloir supprimer cette sortie ? Un motif sera demandé.')">
+                            Annuler la sortie
+                        </a>
+                    {% endif %}
                 {% endif %}
             {% endif %}
-        {% endif %}
-    </div>
+        </div>
 
-</div>
-    {% endblock %}
+    </div>
+{% endblock %}
