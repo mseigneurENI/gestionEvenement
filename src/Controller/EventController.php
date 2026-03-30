@@ -95,8 +95,13 @@ final class EventController extends AbstractController
     ): Response
     {
         $user = $this->getUser();
+        $now =  new \DateTime();
 
         $event = $eventRepository->find($id);
+        if($event->getLimitDateRegistration() < $now ){
+            $this->addFlash('error',  'la date d\'inscription est depassée:(');
+            return $this->redirectToRoute('events_show', ['id' => $event->getId()]);
+        }
 
         if ($event->getParticipants()->count() >= $event->getRegistrationMaxNb()) {
             $this->addFlash('error', 'Il n\'y a plus de place:(');
