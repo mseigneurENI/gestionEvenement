@@ -5,27 +5,30 @@
     <div>
         <h2>Filtrer les sorties</h2>
         <div class="container-form">
-            {{ form_start(filtreForm) }}
-            {{ form_widget(filtreForm.campus) }}
-            {{ form_widget(filtreForm.search) }}
-            <div class="container-date">
-                {{ form_widget(filtreForm.beginDate) }}
-                {{ form_widget(filtreForm.endDate) }}
+            <div>
+                {{ form_start(filtreForm) }}
+                {{ form_widget(filtreForm.campus) }}
+                {{ form_widget(filtreForm.search) }}
+                <div class="container-date">
+                    {{ form_label(filtreForm.beginDate) }}
+                    {{ form_widget(filtreForm.beginDate) }}
+                    {{ form_label(filtreForm.endDate) }}
+                    {{ form_widget(filtreForm.endDate) }}
+                </div>
             </div>
-            {{ form_row(filtreForm.checkbox) }}
-{#            <div class="container-checkbox">#}
-{#            {% for choice in checkbox %}#}
-{#                <label for="{{ field_name(filtreForm.choice) }}">{{ field_name(filtreForm.choice) }}</label>#}
-{#                <input type="checkbox"#}
-{#                       id="{{ field_name(filtreForm.choice) }}"#}
-{#                       name="{{ field_name(filtreForm.choice) }}"#}
-{#                       value="{{ field_value(filtreForm.choice) }}"#}
-{#                >#}
-{#{% endfor %}#}
+            <div>
+                <div class="container-checkbox">
+                    {% for checkbox in filtreForm.checkbox %}
+                        <div class="checkbox-item">
+                            {{ form_widget(checkbox) }}
+                            {{ form_label(checkbox) }}
+                        </div>
+                    {% endfor %}
+                </div>
 
-{#            </div>#}
-            <div class="container-btn">
-                <button>RECHERCHER</button>
+                <div class="container-btn">
+                    <button>RECHERCHER</button>
+                </div>
             </div>
             {{ form_end(filtreForm) }}
         </div>

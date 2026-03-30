@@ -1,4 +1,9 @@
-<a href="{{ path('events_list') }}"><img class="logo" src="{{ asset('images/image-profil-defaut.png') }}" alt="logo"></a>
+<a href="{{ path('events_list') }}">
+    <div class="display-row">
+    <img class="logo" src="{{ asset('images/image-profil-defaut.png') }}" alt="logo">
+<img class="logo" src="{{ asset('images/logo-titre-mma-violet-profond.png') }}" alt="titre">
+    </div>
+</a>
 <nav>
     <ul>
         {% if is_granted('ROLE_ADMIN') %}
