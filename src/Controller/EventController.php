@@ -32,24 +32,14 @@ final class EventController extends AbstractController
     }
 
     #[Route('', name: 'list')]
-    public function list(Request $request, EventRepository $eventRepository, ArchiveService $archiveService ): Response
+    public function list(Request $request, EventRepository $eventRepository): Response
     {
         $filtreForm = $this->createForm(FiltreEventType::class);
         $filtreForm->handleRequest($request);
+        $user = $this->getUser();
+        $id = $user->getId();
 
         $events = $eventRepository->findPublishedEventByDate();
-//
-//        if ($events->getParticipants()->count() >= $events->getRegistrationMaxNb()) {
-//            $this->addFlash('error', 'Il n\'y a plus de place:(');
-//
-//            return $this->redirectToRoute('events_show', ['id' => $events->getId()]);
-//        }
-        //injection de function archiveService
-
-        $this->archiveService->archiveEvent();
-
-//        if($events->getStatus())
-
 
         if ($filtreForm->isSubmitted() && $filtreForm->isValid()) {
             $data = $filtreForm->getData();
@@ -59,10 +49,12 @@ final class EventController extends AbstractController
             $endDate = $data['endDate'];
             $checkboxes = $data['checkbox'];
 
-            $events = $eventRepository->findFilteredEvents($campus, $search, $beginDate, $endDate, $checkboxes);
+
+            $events = $eventRepository->findFilteredEvents($campus, $search, $beginDate, $endDate, $checkboxes, $user, $id);
         }
         return $this->render('event/list.html.twig', ['events' => $events, 'filtreForm' => $filtreForm]);
     }
+
 
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'])]
     public function show(int $id, EventRepository $eventRepository): Response

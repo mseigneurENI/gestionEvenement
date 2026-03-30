@@ -57,6 +57,7 @@ class FiltreEventType extends AbstractType
         $resolver->setDefaults([
         'data_class' => null,
             'required' => false,
+            'csrf_protection' => false,
             // Configure your form options here
         ]);
     }
