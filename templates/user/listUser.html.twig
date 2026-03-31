@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Liste d'utilisateurs</h1>
+
+    <div class="container-table">
+        <table>
+            <thead>
+            <tr>
+                <th>Nom d'utilisateur</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in listUser %}
+                <tr>
+                    <td>
+                        <a href="{{ path('user_show', {'id': user.id}) }}">
+                            {{ user.firstname }} {{ user.lastname }}
+                        </a>
+                    </td>
+                    <td>
+                        {% if app.user and is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('user_delete', {'id': user.id}) }}"
+                               onclick="return confirm('Etes vous sûr de vouloir supprimer cet utilisateur ?')">
+                                <button>Supprimer</button>
+                            </a>
+                        {% endif %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            {% if user.isActive %}
+                                <a href="{{ path('user_deactivate', {'id': user.id}) }}"
+                                   onclick="return confirm('Etes vous sûr de vouloir désactiver cet  utilisateur?')">
+                                    <button>Désactiver</button>
+                                </a>
+                            {% else %}
+                                <a href="{{ path('user_activate', {'id': user.id}) }}"
+                                   onclick="return confirm('Etes vous sûr de vouloir activer cet  utilisateur ?')">
+                                    <button>Activer</button>
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

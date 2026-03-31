@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Event;
 use App\Entity\User;
 use App\Form\ProfileType;
 use App\Repository\CampusRepository;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/user', name: 'user_')]
 final class UserController extends AbstractController
@@ -122,6 +124,53 @@ final class UserController extends AbstractController
         }
         return $this->render('user/create.html.twig', ['userForm' => $userForm]);
     }
+
+//    #[IsGranted('EVENT_DELETE', 'event', 'Vous ne pouvez pas supprimer une sortie que vous n\'avez pas créée.')]
+    #[Route('/{id}/delete', name: 'delete', methods: ['POST','GET'])]
+    public function delete(
+        User                        $user,
+        EntityManagerInterface      $entityManager
+    ): Response
+    {
+        if (!$user) {
+            throw $this->createNotFoundException('user does not exist');
+        }
+
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Suppression réussie');
+
+        return $this->redirectToRoute('events_listUser');
+    }
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/user/{id}/activate', name: 'activate', methods: ['GET','POST'])]
+    public function activate(
+        User                            $user,
+        EntityManagerInterface          $entityManagerInterface
+    ): Response
+    {
+        $user->setActive(true);
+        $entityManagerInterface->flush();
+
+        $this->addFlash('success', 'user activated.');
+        return $this->redirectToRoute('events_listUser');
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/user/{id}/deactivate', name: 'deactivate', methods: ['GET','POST'])]
+    public function deactivate(
+        User                        $user,
+        EntityManagerInterface      $entityManagerInterface):
+    Response
+    {
+        $user->setActive(false);
+        $entityManagerInterface->flush();
+
+        $this->addFlash('success', 'user deactivated.');
+        return $this->redirectToRoute('events_listUser');
+    }
+
 
     #[Route("/import", name: 'import', methods: ['POST', 'GET'])]
     public function importCsv(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, CampusRepository $campusRepository): Response
