@@ -78,16 +78,6 @@ final class EventController extends AbstractController
 
     }
 
-    #[Route('/listUser', name: 'listUser')]
-    public function showUser(UserRepository $userRepository)
-    {
-        $listUser = $userRepository->findAll();
-
-        return $this->render('user/listUser.html.twig', [
-            'listUser' => $listUser
-        ]);
-    }
-
     #[Route('/myEvents', name: 'my_Events')]
     public function showMine(
         EventRepository $eventRepository
