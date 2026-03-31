@@ -141,7 +141,7 @@ final class UserController extends AbstractController
 
         $this->addFlash('success', 'Suppression réussie');
 
-        return $this->redirectToRoute('events_listUser');
+        return $this->redirectToRoute('user_listUser');
     }
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/user/{id}/activate', name: 'activate', methods: ['GET','POST'])]
@@ -154,12 +154,12 @@ final class UserController extends AbstractController
         $entityManagerInterface->flush();
 
         $this->addFlash('success', 'user activated.');
-        return $this->redirectToRoute('events_listUser');
+        return $this->redirectToRoute('user_listUser');
     }
     #[Route('/listUser', name: 'listUser')]
     public function showUser(UserRepository $userRepository)
     {
-        $listUser = $userRepository->findAll();
+        $listUser = $userRepository->findAllByAlphabeticalOrder();
 
         return $this->render('user/listUser.html.twig', [
             'listUser' => $listUser
@@ -177,7 +177,7 @@ final class UserController extends AbstractController
         $entityManagerInterface->flush();
 
         $this->addFlash('success', 'user deactivated.');
-        return $this->redirectToRoute('events_listUser');
+        return $this->redirectToRoute('user_listUser');
     }
 
 
