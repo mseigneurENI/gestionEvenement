@@ -1,8 +1,11 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-<h1>All events</h1>
+<h1>Les Evenement</h1>
 
-
+    <div>
+        <p><strong>Date du jour :</strong> {{ "now"|date('d/m/Y') }}</p>
+        <p><strong>Participant :</strong> {{ app.user.username }}</p>
+    </div>
     <h2>Filtrer les sorties</h2>
     <div class="container-form">
         <div>

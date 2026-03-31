@@ -9,6 +9,9 @@
     <div>Date et heure de fin de la sortie : {{ event.endDate | date('d/m/Y H:m') }}</div>
     <div>Date limite d'inscription à la sortie : {{ event.limitDateRegistration | date('d/m/Y H:m') }}</div>
     <div>Nombre de places : {{ event.registrationMaxNb }}</div>
+    <div>{% set diff = date(event.endDate).diff(date(event.beginDateEvent)) %}
+        Durée  : {{ diff.days }} jours, {{ diff.h }} heures, {{ diff.m }} Minutes, {{ diff.s }} Secondes
+    </div>
     <div>Campus : {{ event.campus.name }}
         <div>Lieu : {{ event.place.name }}</div>
         <div>Rue : {{ event.place.street }}</div>
