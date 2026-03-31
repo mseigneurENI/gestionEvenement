@@ -3,8 +3,8 @@
     <h1 class="noSmartphone">Evènements de l'association</h1>
     <h1 class="noDesktop">Mes évènements</h1>
 
-    <div>
-        <p><strong>Date du jour :</strong> {{ "now"|date('d/m/Y') }}</p>
+    <div class="rightSide noSmartphone">
+        <p><strong>Date du jour :</strong> {{ 'now' | date('d/m/Y') }}</p>
         <p><strong>Participant :</strong> {{ app.user.username }}</p>
     </div>
 

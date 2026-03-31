@@ -41,6 +41,12 @@ footer p{
     align-items:flex-start;
 }
 
+.rightSide{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
 .logo{
     margin: 5px;
     max-height: 150px;
