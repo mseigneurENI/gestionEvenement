@@ -198,6 +198,10 @@ table tr:last-child td:last-child, table tr:last-child td.action {
 }
 
 @media screen and (max-width: 768px){
+    .logo{
+        max-height: 100px;
+    }
+
     .noSmartphone{
 display: none;
     }
