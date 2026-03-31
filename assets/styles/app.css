@@ -37,13 +37,13 @@ footer p{
 .display-row, .rowToColumnSmartphone{
     display: flex;
     flex-direction: row;
+    justify-content: space-evenly;
     align-items:flex-start;
 }
 
 .rightSide{
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
     align-items: flex-end;
 }
 
