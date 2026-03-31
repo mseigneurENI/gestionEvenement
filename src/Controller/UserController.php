@@ -4,12 +4,14 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\ProfileType;
+use App\Repository\CampusRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -26,7 +28,7 @@ final class UserController extends AbstractController
 //    }
 
     #[Route('/update', name: 'update', methods: ['POST', 'GET'])]
-    public function update(Request $request,
+    public function update(Request                $request,
                            EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = $this->getUser();
@@ -43,8 +45,8 @@ final class UserController extends AbstractController
              * @var UploadedFile $file
              */
             $file = $userForm->get('image')->getData();
-            if($file){
-                $newFileName = $user->getUsername() .'-'.uniqid(). '.' . $file->guessExtension();
+            if ($file) {
+                $newFileName = $user->getUsername() . '-' . uniqid() . '.' . $file->guessExtension();
                 $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/assets/images/profileImages';
                 $file->move($uploadsDir, $newFileName);
                 $user->setImage($newFileName);
@@ -52,7 +54,7 @@ final class UserController extends AbstractController
 
 
             $plainPassword = $userForm->get('password')->getData();
-            if ($plainPassword){
+            if ($plainPassword) {
                 $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($hashedPassword);
             }
@@ -71,14 +73,15 @@ final class UserController extends AbstractController
     public function show(int $id, UserRepository $userRepository): Response
     {
         $user = $userRepository->find($id);
-        if (!$user){
+        if (!$user) {
             throw $this->createNotFoundException();
         }
         return $this->render('user/show.html.twig', ['user' => $user]);
     }
 
     #[Route('/create', name: 'create', methods: ['POST', 'GET'])]
-public function create(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response{
+    public function create(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    {
         $user = new User();
         $user->setRoles(['ROLE_USER']);
         //mot de passe par défaut s'il n'est pas rempli par l'admin
@@ -92,8 +95,8 @@ public function create(Request $request, EntityManagerInterface $entityManager, 
              * @var UploadedFile $file
              */
             $file = $userForm->get('image')->getData();
-            if($file){
-                $newFileName = $user->getUsername() .'-'.uniqid(). '.' . $file->guessExtension();
+            if ($file) {
+                $newFileName = $user->getUsername() . '-' . uniqid() . '.' . $file->guessExtension();
                 $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/assets/images/profileImages';
                 $file->move($uploadsDir, $newFileName);
                 $user->setImage($newFileName);
@@ -101,7 +104,7 @@ public function create(Request $request, EntityManagerInterface $entityManager, 
 
 
             $plainPassword = $userForm->get('password')->getData();
-            if ($plainPassword){
+            if ($plainPassword) {
                 $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($hashedPassword);
             }
@@ -112,6 +115,73 @@ public function create(Request $request, EntityManagerInterface $entityManager, 
             return $this->redirectToRoute('user_show', ['id' => $user->getId()]);
         }
         return $this->render('user/create.html.twig', ['userForm' => $userForm]);
+    }
+
+    #[Route("/import", name: 'import', methods: ['POST', 'GET'])]
+    public function importCsv(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, CampusRepository $campusRepository): Response
+    {
+        if (!$this->getUser()->getRoles('ROLE_ADMIN')) {
+            throw new AccessDeniedHttpException('Vous n\'avez pas les droits nécessaires à cette action');
+        }
+        $errors = [];
+        $created = 0;
+        if ($request->isMethod('POST')) {
+            /**
+             * @var UploadedFile $csvFile
+             */
+            $csvFile = $request->files->get('csvFile');
+            if ($csvFile) {
+                try {
+                    $handle = fopen($csvFile->getPathname(), "r");
+                    if ($handle) {
+                        fgetcsv($handle, 0, ';');
+                        while (($row = fgetcsv($handle, 0, ';')) !== false) {
+                            $newPseudo = $row[0];
+                            $newEmail = $row[3];
+                            if ($userRepository->findOneBy(['username' => $newPseudo]) || $userRepository->findOneBy(['email' => $newPseudo])) {
+                                $errors[] = "Doublon ignoré : $newPseudo ($newEmail)";
+                                continue;
+                            }
+
+                            $user = new User();
+                            $user->setUsername($row[0]);
+                            $user->setLastname($row[1]);
+                            $user->setFirstname($row[2]);
+                            $user->setEmail($row[3]);
+                            if ($row[4]) {
+                                $user->setPhoneNb($row[4]);
+                            } else {
+                                $user->setPhoneNb(null);
+                            }
+                            $user->setRoles(['ROLE_USER']);
+                            $user->setActive(true);
+                            $campus = $campusRepository->findOneBy(['name' => 'Saint-Herblain']);
+                            if ($campus) {
+                                $user->setCampus($campus);
+                            } else {
+                                $pseudo = $user->getUsername();
+                                $errors[] = "Campus non attribué pour $pseudo";
+                            }
+                            $user->setPassword($passwordHasher->hashPassword($user, '123456'));
+                            $entityManager->persist($user);
+                            $created++;
+                        }
+                        fclose($handle);
+                        $entityManager->flush();
+                    }
+                } catch (\Exception $e) {
+                    $errors[] = "Erreur fichier : " . $e->getMessage();
+                }
+                if ($created > 0) {
+                    $this->addFlash('success', "$created utilisateurs créés avec succès!");
+                }
+                foreach ($errors as $error) {
+                    $this->addFlash('error', $error);
+                }
+            }
+        }
+//        return $this->render('user/listUser.html.twig');
+        return $this->render('user/import.html.twig');
     }
 
 }

@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+{{ parent() }} - import utilisateurs
+{% endblock %}
+
+{% block body %}
+    <div class="display-column-centered">
+<form method="post" enctype="multipart/form-data">
+    <input type="file" name="csvFile" accept=".csv" required>
+    <button>Importer</button>
+</form>
+    </div>
+{% endblock %}
+
+
+
