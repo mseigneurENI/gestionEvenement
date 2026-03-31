@@ -99,7 +99,7 @@ final class EventController extends AbstractController
 
         $event = $eventRepository->find($id);
         if($event->getLimitDateRegistration() < $now ){
-            $this->addFlash('error',  'la date d\'inscription est depassée:(');
+            $this->addFlash('error',  'la date d\'inscription est dépassée:(');
             return $this->redirectToRoute('events_show', ['id' => $event->getId()]);
         }
 
@@ -182,7 +182,7 @@ final class EventController extends AbstractController
 
             $this->addFlash('success', 'Votre sortie a bien été créée !');
 
-            return $this->redirectToRoute('events_list');
+            return $this->redirectToRoute('events_show', ['id' => $event->getId()]);
         }
 
         return $this->render($id ? 'event/update.html.twig' : 'event/create.html.twig', ['eventForm' => $eventForm]);
