@@ -1,30 +1,33 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-<h1>Les Evenement</h1>
+    <h1 class="noSmartphone">Evènements de l'association</h1>
+    <h1 class="noDesktop">Mes évènements</h1>
 
     <div>
         <p><strong>Date du jour :</strong> {{ "now"|date('d/m/Y') }}</p>
         <p><strong>Participant :</strong> {{ app.user.username }}</p>
     </div>
-    <h2>Filtrer les sorties</h2>
-    <div class="container-form">
-        <div>
-            {{ form_start(filtreForm) }}
-            <div class="container-label-item">
-                {{ form_label(filtreForm.campus) }}
-                {{ form_widget(filtreForm.campus) }}
-            </div>
-            <div class="container-label-item">
-                {{ form_label(filtreForm.search) }}
-                {{ form_widget(filtreForm.search) }}
-            </div>
-            <div class="container-date">
-                {{ form_label(filtreForm.beginDate) }}
-                {{ form_widget(filtreForm.beginDate) }}
-                {{ form_label(filtreForm.endDate) }}
-                {{ form_widget(filtreForm.endDate) }}
-            </div>
-        </div>
+    
+    <div class="noSmartphone">
+        <h2>Filtrer les sorties</h2>
+        <div class="container-form">
+            <div>
+                {{ form_start(filtreForm) }}
+                <div class="container-label-item">
+                    {{ form_label(filtreForm.campus) }}
+                    {{ form_widget(filtreForm.campus) }}
+                </div>
+                <div class="container-label-item">
+                    {{ form_label(filtreForm.search) }}
+                    {{ form_widget(filtreForm.search) }}
+                </div>
+                <div class="container-date">
+                    {{ form_label(filtreForm.beginDate) }}
+                    {{ form_widget(filtreForm.beginDate) }}
+                    {{ form_label(filtreForm.endDate) }}
+                    {{ form_widget(filtreForm.endDate) }}
+                </div>
+
         <div>
             <div class="container-checkbox">
                 {% for checkbox in filtreForm.checkbox %}
@@ -34,13 +37,23 @@
                     </div>
                 {% endfor %}
             </div>
+            <div>
+                <div class="container-checkbox">
+                    {% for checkbox in filtreForm.checkbox %}
+                        <div class="container-label-item">
+                            {{ form_widget(checkbox) }}
+                            {{ form_label(checkbox) }}
+                        </div>
+                    {% endfor %}
+                </div>
 
-            <div class="container-btn">
-                <button>RECHERCHER</button>
-                {#                    {{ form_widget(filtreForm.submit) }} #}
+                <div class="container-btn">
+                    <button>RECHERCHER</button>
+                    {#                    {{ form_widget(filtreForm.submit) }} #}
 
+                </div>
+                {{ form_end(filtreForm) }}
             </div>
-            {{ form_end(filtreForm) }}
         </div>
     </div>
 
@@ -50,62 +63,69 @@
             <tr>
                 <th>Nom de l'évènement</th>
                 <th>Début de l'évènement</th>
-                <th>Fin de l'événement</th>
-                <th>Date limite d'inscription</th>
-                <th>Inscrits / places</th>
-                <th>Etat</th>
-                <th>Inscrit</th>
-                <th>Organisateur</th>
-                <th>Actions</th>
+                <th class="noSmartphone">Fin de l'événement</th>
+                <th class="noSmartphone">Date limite d'inscription</th>
+                <th class="noSmartphone">Inscrits / places</th>
+                <th class="noSmartphone">Etat</th>
+                <th class="noSmartphone">Inscrit</th>
+                <th class="noSmartphone">Organisateur</th>
+                <th class="noSmartphone action">Actions</th>
+                <th class="noDesktop">Ville</th>
             </tr>
             </thead>
             <tbody>
             {% for event in events %}
-                <tr>
-                    <td>{{ event.name }}</td>
-                    <td>{{ event.beginDateEvent|date('d/m/Y H:i') }}</td>
-                    <td>{{ event.endDate|date('d/m/Y H:i') }}</td>
-                    <td>{{ event.limitDateRegistration | date('d/m/Y H:i') }}</td>
-                    <td>{{ event.participants|length }} / {{ event.RegistrationMaxNb }}</td>
-                    <td>{{ event.status.description }}</td>
-                    {% if app.user in event.participants %}
-                        <td>X</td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
-                    <td>
-                        <a href="{{ path('user_show', {'id': event.organiser.id}) }}">{{ event.organiser.firstname }} {{ event.organiser.lastname }}</a>
-                    </td>
-                    <td>
-                        <a href="{{ path('events_show', {'id': event.id}) }}">Afficher</a>
-                        {% if app.user %}
-                            {% if event.status.description != 'Annulée' %}
-                                {% if app.user != event.organiser %}
+                {% if app.user in event.participants %}
+                    <tr>
+                {% else %}
+                    <tr class="noSmartphone">
+                {% endif %}
+                <td class="noDesktop"><a href="{{ path('events_show', {'id': event.id}) }}">{{ event.name }}</a></td>
+                <td class="noSmartphone">{{ event.name }}</td>
+                <td>{{ event.beginDateEvent|date('d/m/Y H:i') }}</td>
+                <td class="noSmartphone">{{ event.endDate|date('d/m/Y H:i') }}</td>
+                <td class="noSmartphone">{{ event.limitDateRegistration | date('d/m/Y H:i') }}</td>
+                <td class="noSmartphone">{{ event.participants|length }} / {{ event.RegistrationMaxNb }}</td>
+                <td class="noSmartphone">{{ event.status.description }}</td>
+                {% if app.user in event.participants %}
+                    <td class="noSmartphone">X</td>
+                {% else %}
+                    <td class="noSmartphone"></td>
+                {% endif %}
+                <td class="noSmartphone">
+                    <a href="{{ path('user_show', {'id': event.organiser.id}) }}">{{ event.organiser.firstname }} {{ event.organiser.lastname }}</a>
+                </td>
+                <td class="noSmartphone action">
+                    <a href="{{ path('events_show', {'id': event.id}) }}">Afficher</a>
+                    {% if app.user %}
+                        {% if event.status.description != 'Annulée' %}
+                            {% if app.user != event.organiser %}
 
-                                    {% if event.status.description == 'Ouverte' %}
-                                        {% if app.user not in event.participants %}
-                                            <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
-                                        {% else %}
-                                            <a href="{{ path('events_unsubscribe', {'id': event.id}) }}"
-                                               onclick="return confirm('Etes-vous sûr de se désister?')">
-                                                Se désister
-                                            </a>
-                                        {% endif %}
+                                {% if event.status.description == 'Ouverte' %}
+                                    {% if app.user not in event.participants %}
+                                        <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
+                                    {% else %}
+                                        <a href="{{ path('events_unsubscribe', {'id': event.id}) }}"
+                                           onclick="return confirm('Etes-vous sûr de vous désister?')">
+                                            Se désister
+                                        </a>
                                     {% endif %}
-
-                                {% else %}
-                                    <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>
                                 {% endif %}
 
+                            {% else %}
+                                <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>
                             {% endif %}
+
                         {% endif %}
-                    </td>
+                    {% endif %}
+                </td>
+                <td class="noDesktop">{{ event.place.city }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
-    <div class="container-btn">
+    <div class="container-btn noSmartphone">
         <a href={{ path('events_create') }}>
             <button>Créer une sortie</button>
         </a>
@@ -113,4 +133,4 @@
     <div class="container-illustration">
         <img src="{{ asset('images/selfie-panda-red-panda.png') }}" alt="panda and red panda">
     </div>
-    {% endblock %}
+{% endblock %}
