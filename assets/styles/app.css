@@ -168,6 +168,18 @@ input[type="checkbox"]{
     flex-direction: column;
 }
 
+.container-table table{
+    max-height: 80vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.container-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
 table{
     box-shadow: 5px 5px 15px rgba(85, 85, 85, 100);
     border-radius: 15px;
