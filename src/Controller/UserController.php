@@ -156,6 +156,15 @@ final class UserController extends AbstractController
         $this->addFlash('success', 'user activated.');
         return $this->redirectToRoute('events_listUser');
     }
+    #[Route('/listUser', name: 'listUser')]
+    public function showUser(UserRepository $userRepository)
+    {
+        $listUser = $userRepository->findAll();
+
+        return $this->render('user/listUser.html.twig', [
+            'listUser' => $listUser
+        ]);
+    }
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/user/{id}/deactivate', name: 'deactivate', methods: ['GET','POST'])]
