@@ -84,11 +84,14 @@ final class UserController extends AbstractController
     {
         $user = new User();
         $user->setRoles(['ROLE_USER']);
-        //mot de passe par défaut s'il n'est pas rempli par l'admin
-        $user->setPassword($passwordHasher->hashPassword($user, '123456'));
         $user->setActive(true);
+        $year = (new \DateTime())->format('Y');
+        //mot de passe par défaut s'il n'est pas rempli par l'admin
+//        $user->setPassword($passwordHasher->hashPassword($user, $user->getFirstname().'.'.$user->getLastname().'@'.$year));
+        $user->setPassword($passwordHasher->hashPassword($user, '123456'));
         $userForm = $this->createForm(ProfileType::class, $user);
         $userForm->handleRequest($request);
+
         if ($userForm->isSubmitted() && $userForm->isValid()) {
 
             /**
@@ -107,6 +110,9 @@ final class UserController extends AbstractController
             if ($plainPassword) {
                 $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($hashedPassword);
+            } else {
+                $user->setPassword($passwordHasher->hashPassword($user, $user->getFirstname() . '.' . $user->getLastname() . '@' . $year));
+
             }
 
             $entityManager->persist($user);
@@ -162,7 +168,9 @@ final class UserController extends AbstractController
                                 $pseudo = $user->getUsername();
                                 $errors[] = "Campus non attribué pour $pseudo";
                             }
-                            $user->setPassword($passwordHasher->hashPassword($user, '123456'));
+//                            $user->setPassword($passwordHasher->hashPassword($user, '123456'));
+                            $year = (new \DateTime())->format('Y');
+                            $user->setPassword($passwordHasher->hashPassword($user, $user->getFirstname() . '.' . $user->getLastname() . '@' . $year));
                             $entityManager->persist($user);
                             $created++;
                         }
@@ -180,7 +188,6 @@ final class UserController extends AbstractController
                 }
             }
         }
-//        return $this->render('user/listUser.html.twig');
         return $this->render('user/import.html.twig');
     }
 
