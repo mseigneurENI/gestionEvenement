@@ -49,7 +49,7 @@ final class EventVoter extends Voter
                 return true;
 
             case self::DELETE:
-                if($user === $event->getOrganiser()){
+                if($user === $event->getParticipants()){
                     return true;
                 }
                 break;

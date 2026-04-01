@@ -122,6 +122,7 @@ class AppFixtures extends Fixture
         $statuses = $manager->getRepository(Status::class)->findAll();
         $organiser = $manager->getRepository(User::class)->findAll();
         $places = $manager->getRepository(Place::class)->findAll();
+        $user = $manager->getRepository(User::class)->findAll();
 
         for ($i = 0; $i < 20; $i++) {
             $event = new Event();
@@ -135,6 +136,14 @@ class AppFixtures extends Fixture
                 ->setStatus($faker->randomElement($statuses))
                 ->setOrganiser($faker->randomElement($organiser))
                 ->setPlace($faker->randomElement($places));
+
+            $randomNb = $faker->boolean(70) //On donne 70% de chance qu'une sortie soit remplie
+            ? $event->getRegistrationMaxNb()
+                : $faker->numberBetween(0, $event->getRegistrationMaxNb());
+
+                for ($count = 0; $count < $randomNb; $count++){
+                $event->addParticipant($faker->randomElement($user));
+                }
 
             $manager->persist($event);
         }

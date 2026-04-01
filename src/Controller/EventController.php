@@ -26,14 +26,14 @@ final class EventController extends AbstractController
 
     public function __construct(
         StatusRepository $statusRepository,
-        StatusService $statusService
-    ) {
+        StatusService    $statusService
+    )
+    {
         $this->statusRepository = $statusRepository;
         $this->statusService = $statusService;
     }
 
     #[Route('', name: 'list')]
-
     public function list(Request $request, EventRepository $eventRepository): Response
     {
 
@@ -101,11 +101,11 @@ final class EventController extends AbstractController
     ): Response
     {
         $user = $this->getUser();
-        $now =  new \DateTime();
+        $now = new \DateTime();
 
         $event = $eventRepository->find($id);
-        if($event->getLimitDateRegistration() < $now ){
-            $this->addFlash('error',  'la date d\'inscription est dépassée:(');
+        if ($event->getLimitDateRegistration() < $now) {
+            $this->addFlash('error', 'la date d\'inscription est dépassée:(');
             return $this->redirectToRoute('events_list');
         }
 
@@ -123,7 +123,6 @@ final class EventController extends AbstractController
     }
 
     #[Route('/{id}/unsubscribe', name: 'unsubscribe')]
-    #[IsGranted("EVENT_VIEW", 'event')]
     public function unsubscribe(
         int                    $id,
         EventRepository        $eventRepository,
@@ -155,10 +154,10 @@ final class EventController extends AbstractController
 //            }
 //        }
 
-            $entityManager->flush();
-            $this->addFlash('cancel', 'Annulation réussie');
-            return $this->redirectToRoute('events_list');
-        }
+        $entityManager->flush();
+        $this->addFlash('cancel', 'Annulation réussie');
+        return $this->redirectToRoute('events_list');
+    }
 
     #[Route('/create', name: 'create', methods: ['POST', 'GET'])]
     public function create(
