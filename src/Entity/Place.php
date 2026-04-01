@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PlaceRepository::class)]
 class Place
@@ -17,18 +18,23 @@ class Place
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Veuillez saisir un nom.')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Veuillez saisir une rue.')]
     private ?string $street = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 6, nullable: true)]
+    #[Assert\NotBlank(message: 'Veuillez saisir une latitude')]
     private ?string $latitude = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 6, nullable: true)]
+    #[Assert\NotBlank(message: 'Veuillez saisir une longitude')]
     private ?string $longitude = null;
 
     #[ORM\ManyToOne(inversedBy: 'places')]
+    #[Assert\NotBlank(message: 'Veuillez choisir une ville')]
     #[ORM\JoinColumn(nullable: false)]
     private ?City $city = null;
 

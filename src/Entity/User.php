@@ -22,9 +22,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Assert\NotBlank(message: 'Please choose a username')]
-    #[Assert\Length(min: 3, max: 180, minMessage: 'This value should be between {{ min }} and {{ max }}.')]
-    #[Assert\Regex(pattern: '/[@<>]/', message: 'Le pseudo ne doit pas contenir de symbole @, < ou >', match: false)]
+    #[Assert\NotBlank(message: 'Veuillez saisir un pseudo')]
+    #[Assert\Length(min: 3, max: 180, minMessage: 'Votre pseudo doit comporter entre {{ min }} et {{ max }} caractères.')]
+    #[Assert\Regex(pattern: '/[@<>]/', message: 'Votre pseudo ne doit pas contenir de symbole @, < ou >', match: false)]
     private ?string $username = null;
 
     /**
@@ -37,26 +37,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Assert\NotBlank(message: 'Please choose a password')]
-    #[Assert\Length(min: 6, minMessage: 'Password should be {{min}} characters minimum.')]
+    #[Assert\NotBlank(message: 'Veuillez saisir un mot de passe')]
+    #[Assert\Length(min: 6, minMessage: 'Votre mot de passe doit comporter {{min}} caractères minimum.')]
+//    #[Assert\Regex('/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/',  message: 'Votre mot de passe doit comporter au moins six caractères, une majuscule, un chiffre et un caractère spécial.')]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'Please enter your firstname')]
-    #[Assert\Length(max: 255, maxMessage: 'Your firstname should be {{ limit }} characters maximum.')]
+    #[Assert\NotBlank(message: 'Veuillez saisir votre prénom')]
+    #[Assert\Length(min: 2, max: 255, MinMessage: 'Votre prénom doit comporter {{min}} caractères minimum.', maxMessage: 'Votre prénom doit comporter {{max}} caractères maximum.')]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'Please enter your lastname')]
-    #[Assert\Length(max: 255, maxMessage: 'Your lastname should be {{ limit }} characters maximum.')]
+    #[Assert\NotBlank(message: 'Veuillez saisir votre nom')]
+    #[Assert\Length(min: 2, max: 255, MinMessage: 'Votre nom doit comporter {{min}} caractères minimum.', maxMessage: 'Votre nom doit comporter {{max}} caractères maximum.')]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 10, nullable: true)]
-    #[Assert\Length(max: 10, maxMessage: 'Your phone number should be {{ limit }} characters maximum.')]
+    #[Assert\Regex('/^\d{10}$/', message: 'Votre numéro de téléphone.')]
     private ?string $phoneNb = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Length(max: 255, maxMessage: 'Your mail should be {{ limit }} characters maximum.')]
+    #[Assert\Email(message: '{{value}} n\'est pas un mail valide.')]
+    #[Assert\Length(max: 255, maxMessage: 'Votre adresse mail doit comporter moins de {{ limit }} caractères.')]
     private ?string $email = null;
 
     #[ORM\Column]

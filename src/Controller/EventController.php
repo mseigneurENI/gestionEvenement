@@ -35,6 +35,7 @@ final class EventController extends AbstractController
     }
 
     #[Route('', name: 'list')]
+
     public function list(Request $request, EventRepository $eventRepository): Response
     {
 
@@ -69,6 +70,7 @@ final class EventController extends AbstractController
 
 
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'])]
+    #[IsGranted("EVENT_VIEW", 'event')]
     public function show(int $id, EventRepository $eventRepository): Response
     {
         $event = $eventRepository->findOneEventById($id);
