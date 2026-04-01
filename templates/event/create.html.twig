@@ -6,20 +6,24 @@
 
 
 {% block body %}
-    <div class="container-btn">
-        <button><a href='{{ path('places_create') }}'>Ajouter un lieu</a></button>
-    </div>
-    {% embed 'views/form/template-form.html.twig' with { form : eventForm} %}
-        {% block formTitle %}Création d'une sortie{% endblock %}
+    <div class="rowToColumnSmartphone">
+        <div>
+            <div class="container-btn">
+                <button><a href='{{ path('places_create') }}'>Ajouter un lieu</a></button>
+            </div>
+            {% embed 'views/form/template-form.html.twig' with { form : eventForm} %}
+                {% block formTitle %}Création d'une sortie{% endblock %}
 
-        {% block body %}
+                {% block body %}
 
-        {% endblock %}
+                {% endblock %}
 
-            {% block buttonLabel %}Valider{% endblock %}
+                {% block buttonLabel %}Valider{% endblock %}
 
-    {% endembed %}
-    <div class="container-illustration">
-    <img class="illustration" src="{{ asset('images/popcorn-eating-racoon.png') }}" alt="popcorn eating racoon">
+            {% endembed %}
+        </div>
+        <div class="container-illustration sticky-illustration">
+            <img class="illustration" src="{{ asset('images/popcorn-eating-racoon.png') }}" alt="popcorn eating racoon">
+        </div>
     </div>
 {% endblock %}
