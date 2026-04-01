@@ -153,7 +153,7 @@ final class UserController extends AbstractController
         $user->setActive(true);
         $entityManagerInterface->flush();
 
-        $this->addFlash('success', 'user activated.');
+        $this->addFlash('success', 'utilisateur activé');
         return $this->redirectToRoute('user_listUser');
     }
     #[Route('/listUser', name: 'listUser')]
@@ -176,7 +176,7 @@ final class UserController extends AbstractController
         $user->setActive(false);
         $entityManagerInterface->flush();
 
-        $this->addFlash('success', 'user deactivated.');
+        $this->addFlash('success', 'utilisateur désactivé');
         return $this->redirectToRoute('user_listUser');
     }
 
@@ -184,7 +184,7 @@ final class UserController extends AbstractController
     #[Route("/import", name: 'import', methods: ['POST', 'GET'])]
     public function importCsv(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, CampusRepository $campusRepository): Response
     {
-        if (!$this->getUser()->getRoles('ROLE_ADMIN')) {
+        if (!$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedHttpException('Vous n\'avez pas les droits nécessaires à cette action');
         }
         $errors = [];
@@ -202,7 +202,7 @@ final class UserController extends AbstractController
                         while (($row = fgetcsv($handle, 0, ';')) !== false) {
                             $newPseudo = $row[0];
                             $newEmail = $row[3];
-                            if ($userRepository->findOneBy(['username' => $newPseudo]) || $userRepository->findOneBy(['email' => $newPseudo])) {
+                            if ($userRepository->findOneBy(['username' => $newPseudo]) || $userRepository->findOneBy(['email' => $newEmail])) {
                                 $errors[] = "Doublon ignoré : $newPseudo ($newEmail)";
                                 continue;
                             }

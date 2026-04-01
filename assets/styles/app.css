@@ -217,6 +217,10 @@ table tr:last-child td:last-child, table tr:last-child td.action {
     border-bottom-right-radius: 15px;
 }
 
+.table-fit-width{
+    max-width: fit-content;
+}
+
 .noDesktop{
     display: none;
 }
