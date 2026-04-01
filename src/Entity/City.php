@@ -6,6 +6,7 @@ use App\Repository\CityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CityRepository::class)]
 class City
@@ -16,9 +17,11 @@ class City
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Veuillez saisir un nom')]
     private ?string $name = null;
 
     #[ORM\Column(length: 10)]
+    #[Assert\Regex('/^\d{5}$/', message: 'Le code postal doit être composé de cinq chiffres')]
     private ?string $zipcode = null;
 
     /**
