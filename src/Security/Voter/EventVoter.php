@@ -64,7 +64,6 @@ final class EventVoter extends Voter
                 break;
 
         }
-
         return false;
     }
 }

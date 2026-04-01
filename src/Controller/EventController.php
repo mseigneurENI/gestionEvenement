@@ -7,10 +7,8 @@ use App\Entity\Event;
 use App\Form\CancellationFormType;
 use App\Form\EventType;
 use App\Form\FiltreEventType;
-use App\Repository\CampusRepository;
 use App\Repository\EventRepository;
 use App\Repository\StatusRepository;
-use App\Repository\UserRepository;
 use App\Service\StatusService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -51,9 +49,6 @@ final class EventController extends AbstractController
         $events = $eventRepository->findPublishedEventByDate();
 
 
-//        if($events->getStatus())
-
-
         if ($filtreForm->isSubmitted() && $filtreForm->isValid()) {
             $data = $filtreForm->getData();
             $campus = $data['campus'];
@@ -71,8 +66,10 @@ final class EventController extends AbstractController
 
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'])]
     #[IsGranted("EVENT_VIEW", 'event')]
-    public function show(int $id, EventRepository $eventRepository): Response
+    public function show(int $id, EventRepository $eventRepository, Event $event): Response
     {
+
+//        throw $this->createAccessDeniedException("ldkjflsdkjfs");
         $event = $eventRepository->findOneEventById($id);
         if (!$event) {
             throw $this->createNotFoundException();
@@ -126,11 +123,11 @@ final class EventController extends AbstractController
     }
 
     #[Route('/{id}/unsubscribe', name: 'unsubscribe')]
+    #[IsGranted("EVENT_VIEW", 'event')]
     public function unsubscribe(
         int                    $id,
         EventRepository        $eventRepository,
         EntityManagerInterface $entityManager,
-//        StatusRepository     $statusRepository
     ): Response
     {
 
@@ -166,19 +163,12 @@ final class EventController extends AbstractController
     #[Route('/create', name: 'create', methods: ['POST', 'GET'])]
     public function create(
         EntityManagerInterface $entityManager,
-//        EventRepository        $eventRepository,
         StatusRepository       $statusRepository,
         Request                $request,
         int                    $id = null
     ): Response
     {
         $event = new Event();
-//        if ($id != null) {
-//            $event = $eventRepository->find($id);
-//            if ($event->getOrganiser() != $this->getUser()) {
-//                throw $this->createAccessDeniedException("Vous ne pouvez pas modifier une sortie que vous n'avez pas créée.");
-//            }
-//        }
 
         $user = $this->getUser();
         if ($user && $user->getCampus()) { //on vérifie que l'utilisateur existe, donc qu'il est connecté ET qu'il a un campus
@@ -217,34 +207,25 @@ final class EventController extends AbstractController
     #[IsGranted('EVENT_DELETE', 'event', 'Vous ne pouvez pas supprimer une sortie que vous n\'avez pas créée.')]
     #[Route('/{id}/delete', name: 'delete', methods: ['POST', 'GET'])]
     public function delete(
-//        int                    $id,
         Event                  $event,
-//        EventRepository        $eventRepository,
         EntityManagerInterface $entityManager,
     ): Response
     {
-//        $event = $eventRepository->find($id);
-//        if (!$event) {
-//            throw $this->createNotFoundException('Event not found');
-//        }
-
         $entityManager->remove($event);
         $entityManager->flush();
-        $this->addFlash('succes', 'Suppression réussie');
+        $this->addFlash('success', 'Suppression réussie');
         return $this->redirectToRoute('events_list');
     }
 
     #[IsGranted('EVENT_EDIT', 'event', 'Vous ne pouvez pas modifier une sortie que vous n\'avez pas créée.')]
     #[Route('/{id}/update', name: 'update', methods: ['GET', 'POST'])]
     public function update(
-//        int $id,
+
         Event                  $event,
-//        EventRepository $eventRepository,
         EntityManagerInterface $entityManager,
         Request                $request
     ): Response
     {
-//        $event = $eventRepository->find($id);
 
         $eventform = $this->createForm(EventType::class, $event);
         $eventform->handleRequest($request);
@@ -291,7 +272,6 @@ final class EventController extends AbstractController
         EntityManagerInterface $entityManagerinterface
     ): Response
     {
-        ////TODO corriger les paramètres de la fonction pour remplacer int $id par Event $event
         $event = $eventRepository->find($id);
         if (!$event) {
             throw $this->createNotFoundException();
