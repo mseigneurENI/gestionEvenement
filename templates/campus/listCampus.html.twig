@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Gérer les campus</h1>
+    <table class="table-fit-width">
+        <thead>
+        <tr>
+            <th>Nom de campus</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for campus in listCampus %}
+            <tr>
+                <td>{{ campus.name }}</td>
+                <td>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('campus_update', {'id': campus.id}) }}">
+                            <button>Modifier</button>
+                        </a>
+                        <a href="{{ path('campus_delete', {'id': campus.id}) }}"
+                           onclick="return confirm('Etes-vous sûr de vouloir supprimer ce campus ?')">
+                            <button>Supprimer</button>
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <h1>Ajouter/Modfier une campus</h1>
+        {{ form_start(form) }}
+            {{ form_widget(form.name) }}
+                <button type="submit">
+                    {% if app.request.attributes.get('_route') == 'campus_update' %}
+                        Modifier
+                    {% else %}
+                        Ajouter
+                    {% endif %}
+                </button>
+    {{ form_end(form) }}
+{% endblock %}
