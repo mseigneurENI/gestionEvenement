@@ -37,7 +37,7 @@ class EventRepository extends ServiceEntityRepository
     public function findPublishedEventByDate(): array
     {
         $qb = $this->createQueryBuilder('e');
-        $qb->addSelect('status,organiser,campus,place,city,participants')
+        $qb->addSelect('e,status,organiser,campus,place,city,participants')
             ->leftJoin('e.status', 'status')
             ->leftJoin('e.organiser', 'organiser')
             ->leftJoin('e.participants', 'participants')
@@ -53,7 +53,7 @@ class EventRepository extends ServiceEntityRepository
     public function findFilteredEvents(?Campus $campus = null, ?string $search = '', ?\DateTimeInterface $beginDate = null, ?\DateTimeInterface $endDate = null, array $checkboxes = [], $user = null, $id = null): array
     {
         $qb = $this->createQueryBuilder('e');
-            $qb->addSelect('status,organiser,campus,place,city,participants')
+            $qb->addSelect('e,status,organiser,campus,place,city,participants')
                 ->leftJoin('e.status', 'status')
                 ->leftJoin('e.organiser', 'organiser')
                 ->leftJoin('e.participants', 'participants')
@@ -134,7 +134,7 @@ class EventRepository extends ServiceEntityRepository
 
         public function findOneEventById(int $id): ?Event{
             $qb = $this->createQueryBuilder('e');
-            $qb->addSelect('status,organiser,campus,place,city,participants')
+            $qb->addSelect('e,status,organiser,campus,place,city,participants')
                 ->leftJoin('e.status', 'status')
             ->leftJoin('e.organiser', 'organiser')
             ->leftJoin('e.participants', 'participants')

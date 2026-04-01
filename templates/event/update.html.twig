@@ -6,12 +6,15 @@
 
 {% block body %}
 
-    {% embed 'views/form/template-form.html.twig' with { form : eventform} %}
-        {% block formTitle %}Création d'une sortie{% endblock %}
-        {% block buttonLabel %}Valider{% endblock %}
-    {% endembed %}
-    <div class="container-illustration">
-        <img src="{{ asset('images/video-gaming-red-panda.png') }}" alt="gaming red panda">
+    <div class="rowToColumnSmartphone">
+        <div>
+            {% embed 'views/form/template-form.html.twig' with { form : eventform} %}
+                {% block formTitle %}Création d'une sortie{% endblock %}
+                {% block buttonLabel %}Valider{% endblock %}
+            {% endembed %}
+        </div>
+        <div class="container-illustration sticky-illustration">
+            <img src="{{ asset('images/video-gaming-red-panda.png') }}" alt="gaming red panda">
+        </div>
     </div>
-
 {% endblock %}

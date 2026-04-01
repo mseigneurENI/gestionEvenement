@@ -54,7 +54,7 @@
     </section>
 
     <div class="container-table">
-        <table>
+        <table class="table-fit-width">
             <thead>
             <tr>
                 <th>Nom de l'évènement</th>
@@ -96,16 +96,13 @@
                     {% if app.user %}
                         {% if event.status.description != 'Annulée' %}
                             {% if app.user != event.organiser %}
-
-                                {% if event.status.description == 'Ouverte' %}
-                                    {% if app.user not in event.participants %}
-                                        <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
-                                    {% else %}
-                                        <a href="{{ path('events_unsubscribe', {'id': event.id}) }}"
-                                           onclick="return confirm('Etes-vous sûr de vous désister?')">
-                                            Se désister
-                                        </a>
-                                    {% endif %}
+                                {% if app.user in event.participants and event.beginDateEvent > "now"|date and event.status.description !== 'En cours' %}
+                                    <a href="{{ path('events_unsubscribe', {'id': event.id}) }}"
+                                       onclick="return confirm('Etes-vous sûr de vous désister?')">
+                                        Se désister
+                                    </a>
+                                {% elseif event.status.description == 'Ouverte' %}
+                                    <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
                                 {% endif %}
 
                             {% else %}

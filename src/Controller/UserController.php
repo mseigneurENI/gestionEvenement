@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Entity\User;
 use App\Form\ProfileType;
 use App\Repository\CampusRepository;
+use App\Repository\EventRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -81,6 +82,7 @@ final class UserController extends AbstractController
         return $this->render('user/show.html.twig', ['user' => $user]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/create', name: 'create', methods: ['POST', 'GET'])]
     public function create(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
@@ -126,14 +128,26 @@ final class UserController extends AbstractController
     }
 
 //    #[IsGranted('EVENT_DELETE', 'event', 'Vous ne pouvez pas supprimer une sortie que vous n\'avez pas créée.')]
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/delete', name: 'delete', methods: ['POST','GET'])]
     public function delete(
         User                        $user,
-        EntityManagerInterface      $entityManager
+        EntityManagerInterface      $entityManager,
+        EventRepository $eventRepository,
     ): Response
     {
+        //protection contre la suppression de son propre compte
+        if ($user === $this->getUser()) {
+            $this->addFlash('error', 'Vous ne pouvez pas supprimer votre propre compte');
+            return $this->redirectToRoute('user_listUser');
+        }
         if (!$user) {
             throw $this->createNotFoundException('user does not exist');
+        }
+
+        $organisedEvents = $eventRepository->findBy(['organiser' => $user]);
+        foreach ($organisedEvents as $event) {
+            $entityManager->remove($event);
         }
 
         $entityManager->remove($user);
@@ -153,9 +167,11 @@ final class UserController extends AbstractController
         $user->setActive(true);
         $entityManagerInterface->flush();
 
-        $this->addFlash('success', 'user activated.');
+        $this->addFlash('success', 'utilisateur activé');
         return $this->redirectToRoute('user_listUser');
     }
+
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/listUser', name: 'listUser')]
     public function showUser(UserRepository $userRepository)
     {
@@ -176,15 +192,16 @@ final class UserController extends AbstractController
         $user->setActive(false);
         $entityManagerInterface->flush();
 
-        $this->addFlash('success', 'user deactivated.');
+        $this->addFlash('success', 'utilisateur désactivé');
         return $this->redirectToRoute('user_listUser');
     }
 
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route("/import", name: 'import', methods: ['POST', 'GET'])]
     public function importCsv(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, CampusRepository $campusRepository): Response
     {
-        if (!$this->getUser()->getRoles('ROLE_ADMIN')) {
+        if (!$this->isGranted('ROLE_ADMIN')) {
             throw new AccessDeniedHttpException('Vous n\'avez pas les droits nécessaires à cette action');
         }
         $errors = [];
@@ -202,7 +219,7 @@ final class UserController extends AbstractController
                         while (($row = fgetcsv($handle, 0, ';')) !== false) {
                             $newPseudo = $row[0];
                             $newEmail = $row[3];
-                            if ($userRepository->findOneBy(['username' => $newPseudo]) || $userRepository->findOneBy(['email' => $newPseudo])) {
+                            if ($userRepository->findOneBy(['username' => $newPseudo]) || $userRepository->findOneBy(['email' => $newEmail])) {
                                 $errors[] = "Doublon ignoré : $newPseudo ($newEmail)";
                                 continue;
                             }

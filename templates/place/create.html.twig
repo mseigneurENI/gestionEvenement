@@ -1,12 +1,16 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<h2>Ajout d'un lieu</h2>
-    {% embed 'views/form/template-form.html.twig' with { form : placeForm } %}
-    {% block buttonLabel %}Valider{% endblock %}
-    {% endembed %}
-    <div class="container-illustration">
-        <img src="{{ asset('images/ok-thumb-red-panda.png') }}" alt="ok panda">
+    <div class="rowToColumnSmartphone">
+        <div>
+        <h2>Ajout d'un lieu</h2>
+        {% embed 'views/form/template-form.html.twig' with { form : placeForm } %}
+            {% block buttonLabel %}Valider{% endblock %}
+        {% endembed %}
+        </div>
+        <div class="container-illustration sticky-illustration">
+            <img src="{{ asset('images/ok-thumb-red-panda.png') }}" alt="ok panda">
+        </div>
     </div>
 {% endblock %}
 

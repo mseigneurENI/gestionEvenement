@@ -62,12 +62,20 @@ nav{
     justify-content: center;
 }
 
-.flash-success{
-    background-color: #79E8B3;
+.flash{
     padding: 10px;
     border-radius: 30px;
     margin: 10px;
     width: fit-content;
+}
+
+.flash-success, .flash-register{
+    background-color: #79E8B3;
+}
+
+.flash-error{
+    background-color: #FF0068;
+    color: white;
 }
 
 h1{
@@ -93,6 +101,12 @@ img {
 
 img .illustration{
     margin: auto;
+}
+
+.sticky-illustration{
+    position: sticky;
+    top: 100px;
+    z-index: 10;
 }
 
 a{
@@ -215,6 +229,10 @@ table tr:last-child td:first-child {
 }
 table tr:last-child td:last-child, table tr:last-child td.action {
     border-bottom-right-radius: 15px;
+}
+
+.table-fit-width{
+    max-width: fit-content;
 }
 
 .noDesktop{
