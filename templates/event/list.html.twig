@@ -95,17 +95,17 @@
                     <a href="{{ path('events_show', {'id': event.id}) }}">Afficher</a>
                     {% if app.user %}
                         {% if event.status.description != 'Annulée' %}
-                            {% if app.user != event.organiser %}
-                                {% if app.user in event.participants and event.beginDateEvent > "now"|date and event.status.description !== 'En cours' %}
-                                    <a href="{{ path('events_unsubscribe', {'id': event.id}) }}"
-                                       onclick="return confirm('Etes-vous sûr de vous désister?')">
-                                        Se désister
-                                    </a>
-                                {% elseif event.status.description == 'Ouverte' %}
-                                    <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
-                                {% endif %}
 
-                            {% else %}
+                            {% if app.user in event.participants and event.limitDateRegistration > date('now') and event.status.description !== 'En cours' %}
+                                <a href="{{ path('events_unsubscribe', {'id': event.id}) }}"
+                                   onclick="return confirm('Etes-vous sûr de vous désister?')">
+                                    Se désister
+                                </a>
+                            {% elseif event.status.description == 'Ouverte' %}
+                                <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
+                            {% endif %}
+
+                            {% if app.user == event.organiser %}
                                 {% if event.status.description == 'En création' %}
                                     <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>
                                 {% endif %}
