@@ -103,6 +103,12 @@ img .illustration{
     margin: auto;
 }
 
+.sticky-illustration{
+    position: sticky;
+    top: 100px;
+    z-index: 10;
+}
+
 a{
     color: #2D3138;
     text-decoration: none;
