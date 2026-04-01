@@ -11,7 +11,7 @@ use App\Repository\CampusRepository;
 use App\Repository\EventRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
-use App\Service\ArchiveService;
+use App\Service\StatusService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,20 +24,23 @@ final class EventController extends AbstractController
 // les dependence
 {
     private StatusRepository $statusRepository;
-    private ArchiveService $archiveService;
-// injection de dependence
-    public function __construct(StatusRepository $statusRepository, ArchiveService $archiveService)
-    {
+    private StatusService $statusService;
+
+    public function __construct(
+        StatusRepository $statusRepository,
+        StatusService $statusService
+    ) {
         $this->statusRepository = $statusRepository;
-        $this->archiveService = $archiveService;
+        $this->statusService = $statusService;
     }
 
     #[Route('', name: 'list')]
     public function list(Request $request, EventRepository $eventRepository): Response
     {
 
-        //injection de function archiveService
-        $this->archiveService->archiveEvent();
+        //injection de function updateAllEventsStatus
+        $this->statusService->updateAllEventsStatus();
+
 
         $filtreForm = $this->createForm(FiltreEventType::class);
         $filtreForm->handleRequest($request);
@@ -113,9 +116,6 @@ final class EventController extends AbstractController
             return $this->redirectToRoute('events_show', ['id' => $event->getId()]);
         }
 
-        if ($event->getStatus()->getDescription() !== 'Ouverte') {
-            throw $this->createAccessDeniedException('Vous ne pouvez pas vous inscrire à cette sortie');
-        }
         $event->addParticipant($user);
         $entityManager->flush();
 
@@ -128,24 +128,33 @@ final class EventController extends AbstractController
         int                    $id,
         EventRepository        $eventRepository,
         EntityManagerInterface $entityManager,
-        StatusRepository     $statusRepository
+//        StatusRepository     $statusRepository
     ): Response
     {
+
         $user = $this->getUser();
         $event = $eventRepository->find($id);
 
+        $now = new \DateTime();
+
+        if ($event->getBeginDateEvent() <= $now) {
+            throw $this->createAccessDeniedException("La sortie a déjà commencé");
+        }
+
 
         $event->removeParticipant($user);
-
-        $now = new \DateTime();
-        // date inscription pas dépassé
-        $red = $event->getLimitDateRegistration() > $now;
-        if ($red) {
-            $openStatus = $statusRepository->findOneBy(['description' => 'Ouverte']);
-            if ($openStatus) {
-                $event->setStatus($openStatus);
-            }
-        }
+//        injection de function updateAllEventsStatus
+        $this->statusService->updateAllEventsStatus();
+//
+//        $now = new \DateTime();
+//        // date inscription pas dépassé
+//        $red = $event->getLimitDateRegistration() > $now;
+//        if ($red) {
+//            $openStatus = $statusRepository->findOneBy(['description' => 'Ouverte']);
+//            if ($openStatus) {
+//                $event->setStatus($openStatus);
+//            }
+//        }
 
             $entityManager->flush();
             $this->addFlash('cancel', 'Annulation réussie');
