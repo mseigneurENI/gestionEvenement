@@ -1,18 +1,16 @@
 {% extends 'base.html.twig' %}
 {% block body %}
+    <div class="display-column-centered">
     <h1 class="noSmartphone">Evènements de l'association</h1>
-    <h1 class="noDesktop">Mes évènements</h1>
-
-    <div class="rightSide noSmartphone">
-        <p><strong>Date du jour :</strong> {{ 'now' | date('d/m/Y') }}</p>
-        <p><strong>Participant :</strong> {{ app.user.username }}</p>
     </div>
+    <h1 class="noDesktop">Mes évènements</h1>
 
     <section>
         <div class="noSmartphone">
             <h2>Filtrer les sorties</h2>
             <div class="container-form">
                 <div>
+                    <p><strong>Date du jour :</strong> {{ 'now' | date('d/m/Y') }}</p>
                     {{ form_start(filtreForm) }}
                     <div class="container-label-item">
                         {{ form_label(filtreForm.campus) }}

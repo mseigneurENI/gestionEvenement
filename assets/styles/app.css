@@ -69,7 +69,7 @@ nav{
     width: fit-content;
 }
 
-.flash-success, .flash-register{
+.flash-success, .flash-register, .flash-cancel{
     background-color: #79E8B3;
 }
 
