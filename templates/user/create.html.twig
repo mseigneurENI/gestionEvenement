@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} - Nouvel utilisateur
+{% endblock %}
+
+
+{% block body %}
+    <div class="display-column-centered">
+            <div class="container-btn">
+                <a href="{{ path('user_import') }}">
+                    <button>Importer des utilisateurs</button>
+                </a>
+            </div>
+
+        <h2><strong>Ou créer un utilisateur manuellement :</strong></h2>
+    </div>
+    {{ form_start(userForm) }}
+    {{ form_widget(userForm) }}
+    <div class="container-btn">
+        <button>Valider</button>
+    </div>
+    {{ form_end(userForm) }}
+
+{% endblock %}
+
+

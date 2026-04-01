@@ -18,6 +18,12 @@ main{
     min-height: 90vh;
 }
 
+.main-body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 footer{
     display: flex;
     flex-direction: column;
@@ -28,26 +34,65 @@ footer p{
     text-align: center;
 }
 
+.display-row, .rowToColumnSmartphone{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items:flex-start;
+}
+
+.display-column-centered{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.rightSide{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
 .logo{
     margin: 5px;
-    max-width: 100px;
+    max-height: 150px;
 }
 
 nav{
     justify-content: center;
 }
 
+.flash-success{
+    background-color: #79E8B3;
+    padding: 10px;
+    border-radius: 30px;
+    margin: 10px;
+    width: fit-content;
+}
+
 h1{
-    font-family: "Coiny", system-ui;
+    /*font-family: "Coiny", system-ui;*/
+    font-family: "Cherry Bomb One", system-ui;
+    margin: 30px 0;
 }
 
 h2{
-    font-family: "Coiny", system-ui;
+    /*font-family: "Coiny", system-ui;*/
+    font-family: "Cherry Bomb One", system-ui;
 }
 
 img {
     max-width: 300px;
     margin: 25px;
+}
+
+.container-illustration{
+    display: flex;
+    justify-content: center;
+}
+
+img .illustration{
+    margin: auto;
 }
 
 a{
@@ -56,7 +101,8 @@ a{
 }
 
 a:hover{
-font-weight: bolder;
+/*font-weight: bolder;*/
+    color: deeppink;
 }
 
 .container-btn{
@@ -66,40 +112,61 @@ font-weight: bolder;
 }
 
 button{
-    appearance: none;
-    border: none;
-    background-color: rgba(103, 233, 255, 100);
+    /*appearance: none;*/
+    /*border: none;*/
+    /*background-color: rgba(103, 233, 255, 100);*/
+    /*color: #2D3138;*/
+    /*box-shadow: 5px 5px 15px rgba(85, 85, 85, 100);*/
+    /*width: fit-content;*/
+    /*margin: auto;*/
+    /*font-family: "Coiny", system-ui;*/
     color: #2D3138;
-    box-shadow: 5px 5px 15px rgba(85, 85, 85, 100);
-    width: fit-content;
-    margin: auto;
+    padding: 15px 25px;
+     background-color: #38D2D2;
+    /*background-color: #ff751f;*/
+    background-image: radial-gradient(93% 87% at 87% 89%, rgba(0, 0, 0, 0.23) 0%, transparent 86.18%), radial-gradient(66% 66% at 26% 20%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 69.79%, rgba(255, 255, 255, 0) 100%);
+    box-shadow: inset -3px -3px 9px rgba(255, 255, 255, 0.25), inset 0 3px 9px rgba(255, 255, 255, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.6), inset 0 -8px 36px rgba(0, 0, 0, 0.3), inset 0 1px 5px rgba(255, 255, 255, 0.6), 2px 19px 31px rgba(0, 0, 0, 0.2);
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    border: none;
+    cursor: pointer;
 }
 
 button:hover{
-    background: linear-gradient(135deg, rgba(103, 233, 255, 100), rgb(11, 178, 205));
+    /*background: linear-gradient(135deg, rgba(103, 233, 255, 100), rgb(11, 178, 205));*/
+    background-color: #04b8b8;
 }
 
-.main-body{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+
 
 .container-form{
+    display: flex;
+    flex-direction: row;
+    gap:50px;
     max-width: 1200px;
-    margin: auto;
+    margin: 40px auto;
+    align-items: center;
 }
 
 .container-date{
     display: flex;
     flex-direction: row;
     gap: 20px;
+    align-items: center;
 }
 
 .container-checkbox{
-    display: flex;
+    display:flex;
+    flex-direction:column;
+    justify-content: left
+}
+
+.container-label-item{
+    display:flex;
     flex-direction: row;
-    gap: 20px;
+    gap:10px;
+    align-items: center;
 }
 
 input[type="checkbox"]{
@@ -107,22 +174,23 @@ input[type="checkbox"]{
     flex-direction: column;
 }
 
-table th:first-child {
-    border-top-left-radius: 15px;
+.container-table table{
+    max-height: 80vh;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
-table th:last-child {
-    border-top-right-radius: 15px;
-}
-table tr:last-child td:first-child {
-    border-bottom-left-radius: 15px;
-}
-table tr:last-child td:last-child {
-    border-bottom-right-radius: 15px;
+
+.container-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 table{
     box-shadow: 5px 5px 15px rgba(85, 85, 85, 100);
     border-radius: 15px;
+    font-size: 1rem;
+    margin: 30px auto;
 }
 
 table th{
@@ -130,18 +198,44 @@ table th{
     background-color: #79E8B3;
 }
 
-/*table tr:nth-child(even) {*/
-/*    background-color: #95aabf;*/
-/*}*/
 
 table a:hover{
     font-weight: normal;
     color: deeppink;
 }
 
-@media screen and (max-width: 800px){
+table th:first-child {
+    border-top-left-radius: 15px;
+}
+table th:last-child, table th.action {
+    border-top-right-radius: 15px;
+}
+table tr:last-child td:first-child {
+    border-bottom-left-radius: 15px;
+}
+table tr:last-child td:last-child, table tr:last-child td.action {
+    border-bottom-right-radius: 15px;
+}
+
+.noDesktop{
+    display: none;
+}
+
+@media screen and (max-width: 768px){
+    .logo{
+        max-height: 100px;
+    }
+
     .noSmartphone{
 display: none;
+    }
+
+    .noDesktop{
+        display: table-cell;
+    }
+
+    .rowToColumnSmartphone{
+        flex-direction: column;
     }
 }
 

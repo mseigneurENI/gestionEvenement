@@ -10,6 +10,8 @@ use App\Form\FiltreEventType;
 use App\Repository\CampusRepository;
 use App\Repository\EventRepository;
 use App\Repository\StatusRepository;
+use App\Repository\UserRepository;
+use App\Service\ArchiveService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,21 +21,34 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('events', name: 'events_')]
 final class EventController extends AbstractController
+// les dependence
 {
     private StatusRepository $statusRepository;
-
-    public function __construct(StatusRepository $statusRepository)
+    private ArchiveService $archiveService;
+// injection de dependence
+    public function __construct(StatusRepository $statusRepository, ArchiveService $archiveService)
     {
         $this->statusRepository = $statusRepository;
+        $this->archiveService = $archiveService;
     }
 
     #[Route('', name: 'list')]
     public function list(Request $request, EventRepository $eventRepository): Response
     {
+
+        //injection de function archiveService
+        $this->archiveService->archiveEvent();
+
         $filtreForm = $this->createForm(FiltreEventType::class);
         $filtreForm->handleRequest($request);
+        $user = $this->getUser();
+        $id = $user->getId();
 
         $events = $eventRepository->findPublishedEventByDate();
+
+
+//        if($events->getStatus())
+
 
         if ($filtreForm->isSubmitted() && $filtreForm->isValid()) {
             $data = $filtreForm->getData();
@@ -43,15 +58,17 @@ final class EventController extends AbstractController
             $endDate = $data['endDate'];
             $checkboxes = $data['checkbox'];
 
-            $events = $eventRepository->findFilteredEvents($campus, $search, $beginDate, $endDate, $checkboxes);
+
+            $events = $eventRepository->findFilteredEvents($campus, $search, $beginDate, $endDate, $checkboxes, $user, $id);
         }
         return $this->render('event/list.html.twig', ['events' => $events, 'filtreForm' => $filtreForm]);
     }
 
+
     #[Route('/{id}', name: 'show', requirements: ['id' => '\d+'])]
     public function show(int $id, EventRepository $eventRepository): Response
     {
-        $event = $eventRepository->find($id);
+        $event = $eventRepository->findOneEventById($id);
         if (!$event) {
             throw $this->createNotFoundException();
         }
@@ -72,7 +89,8 @@ final class EventController extends AbstractController
         return $this->render('event/myEvents.html.twig', ['myEvents' => $myEvents]);
     }
 
-    #[IsGranted("EVENT_REGISTER", 'event', "Vous ne pouvez pas vous inscrire à cette sortie")]
+
+//    #[IsGranted("EVENT_REGISTER", 'event', "Vous ne pouvez pas vous inscrire à cette sortie")]
     #[Route('/{id}/register', name: 'register', methods: ['POST', 'GET'])]
     public function register(
         int                    $id,
@@ -81,8 +99,20 @@ final class EventController extends AbstractController
     ): Response
     {
         $user = $this->getUser();
+        $now =  new \DateTime();
 
         $event = $eventRepository->find($id);
+        if($event->getLimitDateRegistration() < $now ){
+            $this->addFlash('error',  'la date d\'inscription est dépassée:(');
+            return $this->redirectToRoute('events_show', ['id' => $event->getId()]);
+        }
+
+        if ($event->getParticipants()->count() >= $event->getRegistrationMaxNb()) {
+            $this->addFlash('error', 'Il n\'y a plus de place:(');
+
+            return $this->redirectToRoute('events_show', ['id' => $event->getId()]);
+        }
+
         if ($event->getStatus()->getDescription() !== 'Ouverte') {
             throw $this->createAccessDeniedException('Vous ne pouvez pas vous inscrire à cette sortie');
         }
@@ -97,19 +127,30 @@ final class EventController extends AbstractController
     public function unsubscribe(
         int                    $id,
         EventRepository        $eventRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        StatusRepository     $statusRepository
     ): Response
     {
         $user = $this->getUser();
         $event = $eventRepository->find($id);
 
+
         $event->removeParticipant($user);
 
-        $entityManager->flush();
-        $this->addFlash('cancel', 'Annulation réussie');
-        return $this->redirectToRoute('events_list');
-    }
+        $now = new \DateTime();
+        // date inscription pas dépassé
+        $red = $event->getLimitDateRegistration() > $now;
+        if ($red) {
+            $openStatus = $statusRepository->findOneBy(['description' => 'Ouverte']);
+            if ($openStatus) {
+                $event->setStatus($openStatus);
+            }
+        }
 
+            $entityManager->flush();
+            $this->addFlash('cancel', 'Annulation réussie');
+            return $this->redirectToRoute('events_list');
+        }
 
     #[Route('/create', name: 'create', methods: ['POST', 'GET'])]
     public function create(
@@ -156,7 +197,7 @@ final class EventController extends AbstractController
 
             $this->addFlash('success', 'Votre sortie a bien été créée !');
 
-            return $this->redirectToRoute('events_list');
+            return $this->redirectToRoute('events_show', ['id' => $event->getId()]);
         }
 
         return $this->render($id ? 'event/update.html.twig' : 'event/create.html.twig', ['eventForm' => $eventForm]);
@@ -178,7 +219,7 @@ final class EventController extends AbstractController
 
         $entityManager->remove($event);
         $entityManager->flush();
-        $this->addFlash('succes', 'Supperession réussie');
+        $this->addFlash('succes', 'Suppression réussie');
         return $this->redirectToRoute('events_list');
     }
 

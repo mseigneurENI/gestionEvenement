@@ -47,11 +47,13 @@
                                 {% endif %}
 
                             {% else %}
+                                {% if event.status.description == 'En création' %}
                                 <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>
+                                    {% endif %}
 
                                 {% if event.status.description == 'Ouverte' %}
                                     <a href="{{ path('events_reasonCancel', {'id': event.id}) }}"
-                                       onclick="return confirm('Etes vous sûr de vouloir supprimer cette sortie?')">
+                                       onclick="return confirm('Etes vous sûr de vouloir annuler cette sortie?')">
                                         Annuler
                                     </a>
                                 {% endif %}
@@ -68,5 +70,8 @@
         <a href={{ path('events_create') }}>
             <button >Créer une sortie</button>
         </a>
+    </div>
+    <div class="container-illustration">
+        <img src="{{ asset('images/winking-panda.png') }}" alt="winking panda">
     </div>
 {% endblock %}
