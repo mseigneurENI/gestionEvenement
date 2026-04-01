@@ -84,7 +84,7 @@
                         </div>
                     {% endif %}
                 {% endif %}
-                    {% if app.user and app.user == event.organiser %}
+                    {% if app.user and app.user == event.organiser and event.status.description == 'En création' %}
                     <div class="container-btn">
                     <a href="{{ path('events_update', {'id': event.id}) }}"><button>Modifier</button></a>
                     </div>

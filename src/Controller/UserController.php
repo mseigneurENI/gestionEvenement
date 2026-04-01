@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Entity\User;
 use App\Form\ProfileType;
 use App\Repository\CampusRepository;
+use App\Repository\EventRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -81,6 +82,7 @@ final class UserController extends AbstractController
         return $this->render('user/show.html.twig', ['user' => $user]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/create', name: 'create', methods: ['POST', 'GET'])]
     public function create(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
@@ -126,14 +128,26 @@ final class UserController extends AbstractController
     }
 
 //    #[IsGranted('EVENT_DELETE', 'event', 'Vous ne pouvez pas supprimer une sortie que vous n\'avez pas créée.')]
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/delete', name: 'delete', methods: ['POST','GET'])]
     public function delete(
         User                        $user,
-        EntityManagerInterface      $entityManager
+        EntityManagerInterface      $entityManager,
+        EventRepository $eventRepository,
     ): Response
     {
+        //protection contre la suppression de son propre compte
+        if ($user === $this->getUser()) {
+            $this->addFlash('error', 'Vous ne pouvez pas supprimer votre propre compte');
+            return $this->redirectToRoute('user_listUser');
+        }
         if (!$user) {
             throw $this->createNotFoundException('user does not exist');
+        }
+
+        $organisedEvents = $eventRepository->findBy(['organiser' => $user]);
+        foreach ($organisedEvents as $event) {
+            $entityManager->remove($event);
         }
 
         $entityManager->remove($user);
@@ -156,6 +170,8 @@ final class UserController extends AbstractController
         $this->addFlash('success', 'utilisateur activé');
         return $this->redirectToRoute('user_listUser');
     }
+
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/listUser', name: 'listUser')]
     public function showUser(UserRepository $userRepository)
     {
@@ -181,6 +197,7 @@ final class UserController extends AbstractController
     }
 
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route("/import", name: 'import', methods: ['POST', 'GET'])]
     public function importCsv(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, CampusRepository $campusRepository): Response
     {
