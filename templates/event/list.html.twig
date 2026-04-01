@@ -1,18 +1,16 @@
 {% extends 'base.html.twig' %}
 {% block body %}
+    <div class="display-column-centered">
     <h1 class="noSmartphone">Evènements de l'association</h1>
-    <h1 class="noDesktop">Mes évènements</h1>
-
-    <div class="rightSide noSmartphone">
-        <p><strong>Date du jour :</strong> {{ 'now' | date('d/m/Y') }}</p>
-        <p><strong>Participant :</strong> {{ app.user.username }}</p>
     </div>
+    <h1 class="noDesktop">Mes évènements</h1>
 
     <section>
         <div class="noSmartphone">
             <h2>Filtrer les sorties</h2>
             <div class="container-form">
                 <div>
+                    <p><strong>Date du jour :</strong> {{ 'now' | date('d/m/Y') }}</p>
                     {{ form_start(filtreForm) }}
                     <div class="container-label-item">
                         {{ form_label(filtreForm.campus) }}
@@ -95,17 +93,17 @@
                     <a href="{{ path('events_show', {'id': event.id}) }}">Afficher</a>
                     {% if app.user %}
                         {% if event.status.description != 'Annulée' %}
-                            {% if app.user != event.organiser %}
-                                {% if app.user in event.participants and event.beginDateEvent > "now"|date and event.status.description !== 'En cours' %}
-                                    <a href="{{ path('events_unsubscribe', {'id': event.id}) }}"
-                                       onclick="return confirm('Etes-vous sûr de vous désister?')">
-                                        Se désister
-                                    </a>
-                                {% elseif event.status.description == 'Ouverte' %}
-                                    <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
-                                {% endif %}
 
-                            {% else %}
+                            {% if app.user in event.participants and event.limitDateRegistration > date('now') and event.status.description !== 'En cours' %}
+                                <a href="{{ path('events_unsubscribe', {'id': event.id}) }}"
+                                   onclick="return confirm('Etes-vous sûr de vous désister?')">
+                                    Se désister
+                                </a>
+                            {% elseif event.status.description == 'Ouverte' %}
+                                <a href="{{ path('events_register', {'id': event.id}) }}">S'inscrire</a>
+                            {% endif %}
+
+                            {% if app.user == event.organiser %}
                                 {% if event.status.description == 'En création' %}
                                     <a href="{{ path('events_update', {'id': event.id}) }}">Modifier</a>
                                 {% endif %}

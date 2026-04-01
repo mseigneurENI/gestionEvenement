@@ -16,6 +16,7 @@ class Campus
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Veuillez saisir un nom.')]
     private ?string $name = null;
 
     /**

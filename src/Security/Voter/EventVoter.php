@@ -2,6 +2,7 @@
 
 namespace App\Security\Voter;
 
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -28,7 +29,7 @@ final class EventVoter extends Voter
 
         // if the user is anonymous, do not grant access
         if (!$user instanceof UserInterface) {
-            $vote?->addReason('The user must be logged in to access this resource.');
+            $vote?->addReason('Vous devez être connecté·e pour accéder à cette page.');
 
             return false;
         }
@@ -38,18 +39,17 @@ final class EventVoter extends Voter
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::EDIT:
-                if($user === $event->getOrganiser()){// logic to determine if the user can EDIT
-                return true;// return true or false
+                if($user === $event->getOrganiser()){// si l'utilisateur est l'organisateur de l'événement, il peut EDIT puisqu'on retourne true
+                return true;
                 }
                 break;
 
             case self::VIEW:
-                // logic to determine if the user can VIEW
-                // return true or false
-                break;
+                    // quand on arrive ici ça veut dire que l'utilisateur est déjà connecté, donc il suffit de retourner true.
+                return true;
 
             case self::DELETE:
-                if($user === $event->getOrganiser()){
+                if($user === $event->getParticipants()){
                     return true;
                 }
                 break;
@@ -58,13 +58,12 @@ final class EventVoter extends Voter
                 $status = $event->getStatus() ;
                 $limitDate = $event->getlimitDateRegistration();
 
-                if($status && $status->getDescription() === 'Ouverte' && $limitDate >= new \DateTime()){
+                if($status && $status->getDescription() === 'Ouverte' && $limitDate >= new \DateTime() ){
                     return true;
                 }
                 break;
 
         }
-
         return false;
     }
 }

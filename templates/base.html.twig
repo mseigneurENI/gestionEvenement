@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}SortirMMA.com{% endblock %}</title>
-    <link rel="shortcut icon" href="{{ asset('images/racoon-favicon.png') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('images/VraiLogoMMA.png') }}" type="image/x-icon">
     {% block stylesheets %}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.min.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,9 +20,6 @@
 <body>
 <div class="container">
     <header>
-        {#            <a href="{{ path('main_home') }}"> #}
-        {#                <img src="{{ asset('images/logo.svg') }}"> #}
-        {#            </a> #}
         {% include'views/nav/nav.html.twig' %}
     </header>
     <main>

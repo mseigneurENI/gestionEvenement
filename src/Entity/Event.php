@@ -18,17 +18,21 @@ class Event
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Veuillez saisir un nom.')]
     private ?string $name = null;
 
     #[ORM\Column]
-    #[Assert\GreaterThan('today', message: 'La date de début doit être plus tard qu\'aujourd\'hui;')]
+    #[Assert\NotBlank(message: 'Veuillez choisir une date de début.')]
+    #[Assert\GreaterThan('today', message: 'La date de début doit être plus tard qu\'aujourd\'hui.')]
     private ?\DateTime $beginDateEvent = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'Veuillez choisir une date de fin.')]
     #[Assert\GreaterThan(propertyPath: 'beginDateEvent', message: 'La date de fin doit être après la date de début.')]
     private ?\DateTime $endDate = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'Veuillez choisir une date limite d\'inscription.')]
     #[Assert\LessThan(propertyPath: 'beginDateEvent', message: 'La date limite d\'inscription doit être avant la date de début de l\'événement.')]
     private ?\DateTime $limitDateRegistration = null;
 

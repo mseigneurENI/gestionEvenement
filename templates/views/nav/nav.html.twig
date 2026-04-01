@@ -1,6 +1,6 @@
 <a href="{{ path('events_list') }}">
     <div class="display-row">
-    <img class="logo" src="{{ asset('images/image-profil-defaut.png') }}" alt="logo">
+    <img class="logo" src="{{ asset('images/VraiLogoMMA.png') }}" alt="logo">
 <img class="logo" src="{{ asset('images/logo-titre-mma-violet-profond.png') }}" alt="titre">
     </div>
 </a>
@@ -10,9 +10,9 @@
             <li><a>Villes</a></li>
             <li><a href="{{ path('campus_list') }}">Campus</a></li>
             <li><a href="{{ path('user_create') }}">Créer un utilisateur</a></li>
+            <li><a href="{{ path('user_listUser') }}">liste des utilisateurs</a></li>
         {% endif %}
         {% if app.user %}
-            <li><a href="{{ path('user_listUser') }}">liste des utilisateurs</a></li>
             <li><a href="{{ path('events_list') }}">Liste des sorties</a></li>
             <li class="noSmartphone"><a href="{{ path('events_create') }}">Créer une sortie</a></li>
 
