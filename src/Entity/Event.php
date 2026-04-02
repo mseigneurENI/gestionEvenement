@@ -22,17 +22,17 @@ class Event
     private ?string $name = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: 'Veuillez choisir une date de début.')]
+    #[Assert\NotNull(message: 'Veuillez choisir une date de début.')]
     #[Assert\GreaterThan('today', message: 'La date de début doit être plus tard qu\'aujourd\'hui.')]
     private ?\DateTime $beginDateEvent = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: 'Veuillez choisir une date de fin.')]
+    #[Assert\NotNull(message: 'Veuillez choisir une date de fin.')]
     #[Assert\GreaterThan(propertyPath: 'beginDateEvent', message: 'La date de fin doit être après la date de début.')]
     private ?\DateTime $endDate = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank(message: 'Veuillez choisir une date limite d\'inscription.')]
+    #[Assert\NotNull(message: 'Veuillez choisir une date limite d\'inscription.')]
     #[Assert\LessThan(propertyPath: 'beginDateEvent', message: 'La date limite d\'inscription doit être avant la date de début de l\'événement.')]
     private ?\DateTime $limitDateRegistration = null;
 
@@ -94,7 +94,7 @@ class Event
         return $this->beginDateEvent;
     }
 
-    public function setBeginDateEvent(\DateTime $beginDateEvent): static
+    public function setBeginDateEvent(?\DateTime $beginDateEvent): static
     {
         $this->beginDateEvent = $beginDateEvent;
 
@@ -106,7 +106,7 @@ class Event
         return $this->endDate;
     }
 
-    public function setEndDate(\DateTime $endDate): static
+    public function setEndDate(?\DateTime $endDate): static
     {
         $this->endDate = $endDate;
 
@@ -118,7 +118,7 @@ class Event
         return $this->limitDateRegistration;
     }
 
-    public function setLimitDateRegistration(\DateTime $limitDateRegistration): static
+    public function setLimitDateRegistration(?\DateTime $limitDateRegistration): static
     {
         $this->limitDateRegistration = $limitDateRegistration;
 
