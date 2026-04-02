@@ -13,81 +13,75 @@ class StatusService
     private StatusRepository $statusRepository;
 
     private EntityManagerInterface $entityManagerInterface;
-    public function __construct(
-        EventRepository                     $eventRepository,
-        StatusRepository                    $statusRepository,
-        EntityManagerInterface              $entityManagerInterface
 
-    ){
+    public function __construct(
+        EventRepository        $eventRepository,
+        StatusRepository       $statusRepository,
+        EntityManagerInterface $entityManagerInterface
+
+    )
+    {
         $this->eventRepository = $eventRepository;
         $this->statusRepository = $statusRepository;
         $this->entityManagerInterface = $entityManagerInterface;
     }
 
 
-
-    public function updateEventStatus(Event $event): void
-    {
-        $now = new \DateTime();
-        // status archivage
-        $oneMonthAgo = (clone $now)->modify('-1 month');
-        if ($event->getEndDate() < $oneMonthAgo) {
-            $statusArchived = $this->statusRepository->findOneBy(['description' => 'Historisée']);
-            if ($statusArchived) {
-                $event->setStatus($statusArchived);
-                $this->entityManagerInterface->flush();
-            }
-            return;
-        }
-
-       // Status ouverte
-        if ($event->getLimitDateRegistration() > $now) {
-            $openStatus = $this->statusRepository->findOneBy(['description' => 'Ouverte']);
-            if ($openStatus) {
-                $event->setStatus($openStatus);
-            }
-        }
-
-        // Status terminée
-        if ($event->getEndDate() < $now) {
-            $statusFinished = $this->statusRepository->findOneBy(['description' => 'Terminée']);
-            if ($statusFinished) {
-                $event->setStatus($statusFinished);
-                $this->entityManagerInterface->flush();
-            }
-            return;
-        }
-
-        // en cours
-        if ($event->getBeginDateEvent() <= $now) {
-            $statusInProgress = $this->statusRepository->findOneBy(['description' => 'En cours']);
-            if ($statusInProgress) {
-                $event->setStatus($statusInProgress);
-                $this->entityManagerInterface->flush();
-            }
-            return;
-        }
-
-        // cloturée
-        $nbMax = $event->getParticipants()->count() >= $event->getRegistrationMaxNb();
-        $dateLimitPassed = $now > $event->getLimitDateRegistration();
-
-        if (($nbMax || $dateLimitPassed)) {
-            $statusClosed = $this->statusRepository->findOneBy(['description' => 'Clôturée']);
-            if ($statusClosed) {
-                $event->setStatus($statusClosed);
-                $this->entityManagerInterface->flush();
-            }
-        }
-
-    }
-
     public function updateAllEventsStatus(): void
     {
-        $events = $this->eventRepository->findAll();
+
+
+        $events = $this->eventRepository->findAllEventsByStatusToChange();
+
+
+        $closedStatus = $this->statusRepository->findOneBy([
+            'description' => 'Clôturée'
+        ]);
+
+        $openStatus = $this->statusRepository->findOneBy([
+            'description' => 'Ouverte'
+        ]);
+
+        $inProgressStatus = $this->statusRepository->findOneBy([
+            'description' => 'En cours'
+        ]);
+
+        $finishedStatus = $this->statusRepository->findOneBy([
+            'description' => 'Terminée'
+        ]);
+
+        $historizedStatus = $this->statusRepository->findOneBy([
+            'description' => 'Historisée'
+        ]);
+        $today = new \DateTime('now');
+        $historizingDate = new \DateTimeImmutable('-1 month');
         foreach ($events as $event) {
-            $this->updateEventStatus($event);
+            $nbParticipants = $event->getParticipants()->count();
+
+            //historisation
+            if ($event->getEndDate() <= $historizingDate) {
+                $event->setStatus($historizedStatus);
+            }
+            //statut "Terminée"
+            elseif ($event->getEndDate() <= $today) {
+                $event->setStatus($finishedStatus);
+            }
+            //statut "En cours"
+            elseif ($event->getEndDate() > $today && $event->getBeginDateEvent() < $today) {
+                $event->setStatus($inProgressStatus);
+            }
+            else {
+                //statut ouvert
+                if ($nbParticipants < $event->getRegistrationMaxNb() && $event->getLimitDateRegistration() > $today) {
+                    $event->setStatus($openStatus);
+                }
+                //Clôture d'un event
+                elseif ($nbParticipants >= $event->getRegistrationMaxNb() || $event->getLimitDateRegistration() < $today) {
+                    $event->setStatus($closedStatus);
+                }
+            }
         }
+        $this->entityManagerInterface->flush();
     }
 
 }
