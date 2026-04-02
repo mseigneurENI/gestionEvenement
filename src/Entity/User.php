@@ -38,18 +38,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     #[Assert\NotBlank(message: 'Veuillez saisir un mot de passe')]
-    #[Assert\Length(min: 6, minMessage: 'Votre mot de passe doit comporter {{min}} caractères minimum.')]
+    #[Assert\Length(min: 6, minMessage: 'Votre mot de passe doit comporter {{ min }} caractères minimum.')]
 //    #[Assert\Regex('/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/',  message: 'Votre mot de passe doit comporter au moins six caractères, une majuscule, un chiffre et un caractère spécial.')]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Veuillez saisir votre prénom')]
-    #[Assert\Length(min: 2, max: 255, MinMessage: 'Votre prénom doit comporter {{min}} caractères minimum.', maxMessage: 'Votre prénom doit comporter {{max}} caractères maximum.')]
+    #[Assert\Length(min: 2, max: 255, minMessage: 'Votre prénom doit comporter {{ min }} caractères minimum.', maxMessage: 'Votre prénom doit comporter {{ max }} caractères maximum.')]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Veuillez saisir votre nom')]
-    #[Assert\Length(min: 2, max: 255, MinMessage: 'Votre nom doit comporter {{min}} caractères minimum.', maxMessage: 'Votre nom doit comporter {{max}} caractères maximum.')]
+    #[Assert\Length(min: 2, max: 255, minMessage: 'Votre nom doit comporter {{min}} caractères minimum.', maxMessage: 'Votre nom doit comporter {{max}} caractères maximum.')]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 10, nullable: true)]
