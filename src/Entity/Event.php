@@ -65,7 +65,6 @@ class Event
     private ?User $organiser = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Assert\NotBlank(message: 'Veuillez indiquer un motif d\'annulation')]
     private ?string $cancellationReason = null;
 
     public function __construct()

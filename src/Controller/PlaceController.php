@@ -55,7 +55,7 @@ public function Create(EntityManagerInterface $entityManager, Request $request):
         return $this->redirectToRoute('events_create');
     }
 
-    return $this->render('place/listCampus.html.twig', [
+    return $this->render('place/create.html.twig', [
         'placeForm' => $placeForm
     ]);
 }
