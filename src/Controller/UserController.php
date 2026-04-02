@@ -84,7 +84,12 @@ final class UserController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/create', name: 'create', methods: ['POST', 'GET'])]
-    public function create(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    public function create(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher
+    ): Response
+
     {
         $user = new User();
         $user->setRoles(['ROLE_USER']);

@@ -27,6 +27,7 @@ class AppFixtures extends Fixture
         $this->addPlace($manager);
         $this->addUser($manager);
         $this->addEvent($manager);
+        $this->addAdmin($manager);
     }
 
     public function addCity(ObjectManager $manager)
@@ -56,6 +57,31 @@ class AppFixtures extends Fixture
                 ->setUsername($faker->userName())
                 ->setActive(1)
                 ->setRoles(['ROLE_USER'])
+                ->setEmail($faker->email())
+                ->setPassword(
+                    $this->userPasswordHasher->hashPassword($user, '123456')
+                )
+                ->setCampus($faker->randomElement($campus));
+
+
+            $manager->persist($user);
+        }
+        $manager->flush();
+    }
+
+    public function addAdmin(ObjectManager $manager)
+    {
+        $faker = Factory::create('fr_FR');
+        $campus = $manager->getRepository(Campus::class)->findAll();
+
+        for ($i = 0; $i < 3; $i++) {
+            $user = new User();
+            $user
+                ->setLastname($faker->lastName())
+                ->setFirstname($faker->firstName)
+                ->setUsername($faker->userName())
+                ->setActive(1)
+                ->setRoles(['ROLE_ADMIN'])
                 ->setEmail($faker->email())
                 ->setPassword(
                     $this->userPasswordHasher->hashPassword($user, '123456')
