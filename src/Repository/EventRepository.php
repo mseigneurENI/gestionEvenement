@@ -21,13 +21,13 @@ class EventRepository extends ServiceEntityRepository
     public function findMyEvents(User $user): array
     {
         $qb = $this->createQueryBuilder('e');
-            $qb->addSelect('status,organiser,campus,place,city,participants')
-                ->leftJoin('e.status', 'status')
-                ->leftJoin('e.organiser', 'organiser')
-                ->leftJoin('e.participants', 'participants')
-                ->leftJoin('e.campus', 'campus')
-                ->leftJoin('e.place', 'place')
-                ->leftJoin('place.city', 'city')
+        $qb->addSelect('status,organiser,campus,place,city,participants')
+            ->leftJoin('e.status', 'status')
+            ->leftJoin('e.organiser', 'organiser')
+            ->leftJoin('e.participants', 'participants')
+            ->leftJoin('e.campus', 'campus')
+            ->leftJoin('e.place', 'place')
+            ->leftJoin('place.city', 'city')
             ->andWhere('e.organiser = :user')
             ->setParameter('user', $user);
 
@@ -53,13 +53,13 @@ class EventRepository extends ServiceEntityRepository
     public function findFilteredEvents(?Campus $campus = null, ?string $search = '', ?\DateTimeInterface $beginDate = null, ?\DateTimeInterface $endDate = null, array $checkboxes = [], $user = null, $id = null): array
     {
         $qb = $this->createQueryBuilder('e');
-            $qb->addSelect('e,status,organiser,campus,place,city,participants')
-                ->leftJoin('e.status', 'status')
-                ->leftJoin('e.organiser', 'organiser')
-                ->leftJoin('e.participants', 'participants')
-                ->leftJoin('e.campus', 'campus')
-                ->leftJoin('e.place', 'place')
-                ->leftJoin('place.city', 'city')
+        $qb->addSelect('e,status,organiser,campus,place,city,participants')
+            ->leftJoin('e.status', 'status')
+            ->leftJoin('e.organiser', 'organiser')
+            ->leftJoin('e.participants', 'participants')
+            ->leftJoin('e.campus', 'campus')
+            ->leftJoin('e.place', 'place')
+            ->leftJoin('place.city', 'city')
             ->andwhere('status.description NOT IN (:forbiddenStatus)')
             ->setParameter('forbiddenStatus', ["En création", "Historisée"]);
         if ($campus) {
@@ -98,7 +98,7 @@ class EventRepository extends ServiceEntityRepository
 
             if (in_array('terminee', $checkboxes)) {
                 $qb->andWhere('e.status in (:statutTerminee)')
-                ->setParameter('statutTerminee', "Terminée");
+                    ->setParameter('statutTerminee', "Terminée");
             }
         }
 
@@ -107,35 +107,35 @@ class EventRepository extends ServiceEntityRepository
     }
 
 
-        /**
-         * @return Event[] Returns an array of Event objects
-         */
-        public function findByExampleField($value): array
-        {
-            return $this->createQueryBuilder('e')
-                ->andWhere('e.exampleField = :val')
-                ->setParameter('val', $value)
-                ->orderBy('e.id', 'ASC')
-                ->setMaxResults(10)
-                ->getQuery()
-                ->getResult()
+    /**
+     * @return Event[] Returns an array of Event objects
+     */
+    public function findByExampleField($value): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.exampleField = :val')
+            ->setParameter('val', $value)
+            ->orderBy('e.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
             ;
-        }
+    }
 
-        public function findOneBySomeField($value): ?Event
-        {
-            return $this->createQueryBuilder('e')
-                ->andWhere('e.exampleField = :val')
-                ->setParameter('val', $value)
-                ->getQuery()
-                ->getOneOrNullResult()
+    public function findOneBySomeField($value): ?Event
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.exampleField = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
             ;
-        }
+    }
 
-        public function findOneEventById(int $id): ?Event{
-            $qb = $this->createQueryBuilder('e');
-            $qb->addSelect('e,status,organiser,campus,place,city,participants')
-                ->leftJoin('e.status', 'status')
+    public function findOneEventById(int $id): ?Event{
+        $qb = $this->createQueryBuilder('e');
+        $qb->addSelect('e,status,organiser,campus,place,city,participants')
+            ->leftJoin('e.status', 'status')
             ->leftJoin('e.organiser', 'organiser')
             ->leftJoin('e.participants', 'participants')
             ->leftJoin('e.campus', 'campus')
@@ -143,6 +143,149 @@ class EventRepository extends ServiceEntityRepository
             ->leftJoin('place.city', 'city')
             ->andWhere('e.id = :id')
             ->setParameter('id', $id);
-            return $qb->getQuery()->getOneOrNullResult();
-        }
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
+    public function findAllMyCompleteEventstoChange(): array
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->addSelect('e,status,organiser,campus,place,city,participants')
+            ->leftJoin('e.status', 'status')
+            ->leftJoin('e.organiser', 'organiser')
+            ->leftJoin('e.participants', 'participants')
+            ->leftJoin('e.campus', 'campus')
+            ->leftJoin('e.place', 'place')
+            ->leftJoin('place.city', 'city')
+            ->andwhere('status.description NOT IN (:forbiddenStatus)')
+            ->setParameter('forbiddenStatus', ["En création", "Supprimée", "Annulée", "Historisée"])
+            ->addOrderBy('e.beginDateEvent', 'ASC');
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findAllEventstoHistorize(): array{
+        $limitDate = new \DateTimeImmutable('-1 month');
+        $qb = $this->createQueryBuilder('e');
+        $qb->addSelect('e,status,organiser,campus,place,city,participants')
+            ->leftJoin('e.status', 'status')
+            ->leftJoin('e.organiser', 'organiser')
+            ->leftJoin('e.participants', 'participants')
+            ->leftJoin('e.campus', 'campus')
+            ->leftJoin('e.place', 'place')
+            ->leftJoin('place.city', 'city')
+            ->andwhere('status.description = :terminated')
+            ->setParameter('terminated', 'Terminée')
+            ->andWhere('e.endDate < :limitDate')
+            ->setParameter('limitDate', $limitDate)
+            ->addOrderBy('e.beginDateEvent', 'ASC');
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findAllEventstoClose():array{
+        $limitDate = new \DateTimeImmutable('now');
+        $qb = $this->createQueryBuilder('e');
+        $qb->addSelect('e,status,organiser,campus,place,city,participants')
+            ->leftJoin('e.status', 'status')
+            ->leftJoin('e.organiser', 'organiser')
+            ->leftJoin('e.participants', 'participants')
+            ->leftJoin('e.campus', 'campus')
+            ->leftJoin('e.place', 'place')
+            ->leftJoin('place.city', 'city')
+            ->andwhere('status.description = :open')
+            ->setParameter('open', 'Ouvert')
+            ->andWhere('e.limitDateRegistration < :limitDate')
+            ->setParameter('limitDate', $limitDate)
+            ->addOrderBy('e.beginDateEvent', 'ASC');
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findAllEventstoCloseMaxParticipants():array{
+        $qb = $this->createQueryBuilder('e');
+        $qb->addSelect('e,status,organiser,campus,place,city,participants')
+            ->leftJoin('e.status', 'status')
+            ->leftJoin('e.organiser', 'organiser')
+            ->leftJoin('e.participants', 'participants')
+            ->leftJoin('e.campus', 'campus')
+            ->leftJoin('e.place', 'place')
+            ->leftJoin('place.city', 'city')
+            ->andwhere('status.description = :open')
+            ->setParameter('open', 'Ouvert')
+//            ->andwhere('e.registrationMaxNb <= e.participants.length')
+            // ->andWhere('e.limitDateRegistration > :limitDate')
+            // ->setParameter('limitDate', $limitDate)
+            ->addOrderBy('e.beginDateEvent', 'ASC');
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findAllEventstoOpenAfterMaxParticipants(): array{
+        $limitDate = new \DateTimeImmutable('now');
+        $qb = $this->createQueryBuilder('e');
+        $qb->addSelect('e,status,organiser,campus,place,city,participants')
+            ->leftJoin('e.status', 'status')
+            ->leftJoin('e.organiser', 'organiser')
+            ->leftJoin('e.participants', 'participants')
+            ->leftJoin('e.campus', 'campus')
+            ->leftJoin('e.place', 'place')
+            ->leftJoin('place.city', 'city')
+            ->andwhere('status.description = :closed')
+            ->setParameter('closed', 'Clôturée')
+            ->andWhere('e.limitDateRegistration > :limitDate')
+            ->setParameter('limitDate', $limitDate)
+//            ->andwhere('e.registrationMaxNb > e.participants.length')
+            ->addOrderBy('e.beginDateEvent', 'ASC');
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findAllEventstoFinish(): array{
+        $limitDate = new \DateTimeImmutable('now');
+        $qb = $this->createQueryBuilder('e');
+        $qb->addSelect('e,status,organiser,campus,place,city,participants')
+            ->leftJoin('e.status', 'status')
+            ->leftJoin('e.organiser', 'organiser')
+            ->leftJoin('e.participants', 'participants')
+            ->leftJoin('e.campus', 'campus')
+            ->leftJoin('e.place', 'place')
+            ->leftJoin('place.city', 'city')
+            ->andwhere('status.description = :inProgress')
+            ->setParameter('inProgress', 'En cours')
+            ->andWhere('e.endDate < :limitDate')
+            ->setParameter('limitDate', $limitDate)
+            ->addOrderBy('e.beginDateEvent', 'ASC');
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findAllEventsInProgress():array{
+        $limitDate = new \DateTimeImmutable('now');
+        $qb = $this->createQueryBuilder('e');
+        $qb->addSelect('e,status,organiser,campus,place,city,participants')
+            ->leftJoin('e.status', 'status')
+            ->leftJoin('e.organiser', 'organiser')
+            ->leftJoin('e.participants', 'participants')
+            ->leftJoin('e.campus', 'campus')
+            ->leftJoin('e.place', 'place')
+            ->leftJoin('place.city', 'city')
+            ->andwhere('status.description IN (:authorizedStatus)')
+            ->setParameter('authorizedStatus', ['Ouverte', 'Clôturée'])
+            ->andWhere('e.beginDateEvent < :limitDate')
+            ->andWhere('e.endDate > :limitDate')
+            ->setParameter('limitDate', $limitDate)
+            ->addOrderBy('e.beginDateEvent', 'ASC');
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findAllEventsByStatusToChange(): array
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->addSelect('e,status,organiser,campus,place,city,participants')
+            ->leftJoin('e.status', 'status')
+            ->leftJoin('e.organiser', 'organiser')
+            ->leftJoin('e.participants', 'participants')
+            ->leftJoin('e.campus', 'campus')
+            ->leftJoin('e.place', 'place')
+            ->leftJoin('place.city', 'city')
+            ->andwhere('status.description NOT IN (:forbiddenStatus)')
+            ->setParameter('forbiddenStatus', ["En création", "Annulée", "Historisée"])
+            ->addOrderBy('e.beginDateEvent', 'ASC');
+        return $qb->getQuery()->getResult();
+    }
+
 }
