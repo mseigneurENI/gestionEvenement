@@ -114,6 +114,8 @@ final class UserController extends AbstractController
                 $user->setImage($newFileName);
             }
             $createdUser = $userFormHandler->managePasswordAttribution($userForm, $user);
+            $entityManager->persist($user);
+            $entityManager->flush();
             $this->addFlash('success', 'Nouvel utilisateur créé');
             return $this->redirectToRoute('user_show', ['id' => $createdUser->getId()]);
         }
