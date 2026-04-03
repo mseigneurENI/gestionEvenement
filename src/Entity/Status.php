@@ -17,7 +17,7 @@ class Status
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Length(255, 'La description doit faire moins de ')]
+    #[Assert\Length(max:255, maxMessage: 'La description doit faire {{ max }} caractères.')]
     private ?string $description = null;
 
     /**
