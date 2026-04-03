@@ -103,7 +103,17 @@ final class UserController extends AbstractController
         $userForm->handleRequest($request);
 
         if ($userForm->isSubmitted() && $userForm->isValid()) {
-            $createdUser = $userFormHandler->createCompleteUser($userForm, $user);
+            /**
+             * @var UploadedFile $file
+             */
+            $file = $userForm->get('image')->getData();
+            if ($file) {
+                $newFileName = $user->getUsername() . '-' . uniqid() . '.' . $file->guessExtension();
+                $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/assets/images/profileImages';
+                $file->move($uploadsDir, $newFileName);
+                $user->setImage($newFileName);
+            }
+            $createdUser = $userFormHandler->managePasswordAttribution($userForm, $user);
             $this->addFlash('success', 'Nouvel utilisateur créé');
             return $this->redirectToRoute('user_show', ['id' => $createdUser->getId()]);
         }

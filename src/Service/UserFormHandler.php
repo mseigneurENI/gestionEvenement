@@ -14,21 +14,8 @@ class UserFormHandler
         private readonly UserPasswordHasherInterface $passwordHasher,
     ) {}
 
-    public function createCompleteUser(FormInterface $form, User $user): User
+    public function managePasswordAttribution(FormInterface $form, User $user): User
     {
-
-        /**
-         * @var UploadedFile $file
-         */
-        $file = $form->get('image')->getData();
-        if ($file) {
-            $newFileName = $user->getUsername() . '-' . uniqid() . '.' . $file->guessExtension();
-             $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/assets/images/profileImages';
-            $file->move($uploadsDir, $newFileName);
-            $user->setImage($newFileName);
-        }
-
-
         $plainPassword = $form->get('password')->getData();
         if ($plainPassword) {
             $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
