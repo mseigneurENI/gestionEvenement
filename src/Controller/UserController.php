@@ -97,7 +97,6 @@ final class UserController extends AbstractController
         $user->setRoles(['ROLE_USER']);
         $user->setActive(true);
         //mot de passe par défaut s'il n'est pas rempli par l'admin
-//        $user->setPassword($passwordHasher->hashPassword($user, $user->getFirstname().'.'.$user->getLastname().'@'.$year));
         $user->setPassword($passwordHasher->hashPassword($user, '123456'));
         $userForm = $this->createForm(ProfileType::class, $user);
         $userForm->handleRequest($request);
@@ -113,11 +112,12 @@ final class UserController extends AbstractController
                 $file->move($uploadsDir, $newFileName);
                 $user->setImage($newFileName);
             }
-            $createdUser = $userFormHandler->managePasswordAttribution($userForm, $user);
+
+            $user = $userFormHandler->managePasswordAttribution($userForm, $user);
             $entityManager->persist($user);
             $entityManager->flush();
             $this->addFlash('success', 'Nouvel utilisateur créé');
-            return $this->redirectToRoute('user_show', ['id' => $createdUser->getId()]);
+            return $this->redirectToRoute('user_show', ['id' => $user->getId()]);
         }
         return $this->render('user/create.html.twig', ['userForm' => $userForm]);
     }
