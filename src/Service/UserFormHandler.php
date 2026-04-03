@@ -24,9 +24,6 @@ class UserFormHandler
             $year = (new \DateTime())->format('Y');
             $user->setPassword($this->passwordHasher->hashPassword($user, $user->getFirstname() . '.' . $user->getLastname() . '@' . $year));
         }
-
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
         return $user;
     }
 
