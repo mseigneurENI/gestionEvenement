@@ -49,7 +49,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Veuillez saisir votre nom')]
-    #[Assert\Length(min: 2, max: 255, minMessage: 'Votre nom doit comporter {{min}} caractères minimum.', maxMessage: 'Votre nom doit comporter {{max}} caractères maximum.')]
+    #[Assert\Length(min: 2, max: 255, minMessage: 'Votre nom doit comporter {{ min }} caractères minimum.', maxMessage: 'Votre nom doit comporter {{ max }} caractères maximum.')]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 10, nullable: true)]
