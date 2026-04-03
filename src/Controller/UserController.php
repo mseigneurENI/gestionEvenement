@@ -122,7 +122,7 @@ final class UserController extends AbstractController
         return $this->render('user/create.html.twig', ['userForm' => $userForm]);
     }
 
-//    #[IsGranted('EVENT_DELETE', 'event', 'Vous ne pouvez pas supprimer une sortie que vous n\'avez pas créée.')]
+//    #[IsGranted('EVENT_DELETE', 'event', 'Vous ne pouvez pas supprimer une sortie que vous n\'avez pas créée!')]
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}/delete', name: 'delete', methods: ['POST','GET'])]
     public function delete(
