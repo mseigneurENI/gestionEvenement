@@ -22,7 +22,8 @@ class UserFormHandler
             $user->setPassword($hashedPassword);
         } else {
             $year = (new \DateTime())->format('Y');
-            $user->setPassword($this->passwordHasher->hashPassword($user, $user->getFirstname() . '.' . $user->getLastname() . '@' . $year));
+            $plainPassword = $user->getFirstname() . '.' . $user->getLastname() . '@' . $year;
+            $user->setPassword($this->passwordHasher->hashPassword($user, $plainPassword));
         }
         return $user;
     }
